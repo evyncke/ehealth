@@ -1,0 +1,162 @@
+
+After analyzing the uploaded image, the QR code is (left-hand column is the hexadecimal/computer format, the right-hand column is the ASCII/human format):
+<span style="background-color: orange;">48 </span><span style="background-color: orange;">43 </span><span style="background-color: orange;">31 </span>3A 4E 43 46 4F 58 4E 25 54 53 4D 41 48    <span style="background-color: orange;">H </span><span style="background-color: orange;">C </span><span style="background-color: orange;">1 </span>: N C F O X N % T S M A H 
+4E 2D 48 25 4F 43 48 4F 53 38 30 4A 53 33 4E 4C    N - H % O C H O S 8 0 J S 3 N L 
+37 33 3A 44 34 2B 4F 56 2D 33 36 48 44 37 41 4F    7 3 : D 4 + O V - 3 6 H D 7 A O 
+4D 4F 57 34 53 32 53 2A 2A 4A 34 47 35 57 2F 4A    M O W 4 S 2 S * * J 4 G 5 W / J 
+54 33 46 46 2F 38 58 2A 47 33 4D 39 42 4D 39 5A    T 3 F F / 8 X * G 3 M 9 B M 9 Z 
+30 42 5A 57 34 56 2F 41 59 37 33 33 4A 37 25 32    0 B Z W 4 V / A Y 7 3 3 J 7 % 2 
+48 56 37 37 41 44 46 59 52 56 4E 44 46 2E 39 33    H V 7 7 A D F Y R V N D F . 9 3 
+24 50 4E 2D 2A 30 58 33 37 2A 30 39 30 47 56 56    $ P N - * 0 X 3 7 * 0 9 0 G V V 
+4E 4E 47 4D 35 56 2E 34 39 39 54 50 2B 4D 35 2A    N N G M 5 V . 4 9 9 T P + M 5 * 
+4B 2A 55 33 2A 39 36 38 34 36 41 24 51 20 37 36    K * U 3 * 9 6 8 4 6 A $ Q   7 6 
+55 57 36 32 55 31 30 25 4D 50 46 36 35 5A 4D 4E    U W 6 2 U 1 0 % M P F 6 5 Z M N 
+48 36 4C 4B 39 32 52 35 51 56 31 4F 32 52 30 4E    H 6 L K 9 2 R 5 Q V 1 O 2 R 0 N 
+4C 44 2B 39 20 42 4C 58 45 36 55 43 36 35 5A 4D    L D + 9   B L X E 6 U C 6 5 Z M 
+31 37 36 4E 46 36 37 35 49 50 46 35 24 35 51 41    1 7 6 N F 6 7 5 I P F 5 $ 5 Q A 
+34 36 2F 51 36 35 37 36 50 52 36 50 46 35 52 42    4 6 / Q 6 5 7 6 P R 6 P F 5 R B 
+51 37 34 36 42 34 36 4F 31 4E 36 34 36 52 4D 39    Q 7 4 6 B 4 6 O 1 N 6 4 6 R M 9 
+58 43 35 2E 51 36 39 4C 36 2D 39 36 51 57 36 55    X C 5 . Q 6 9 L 6 - 9 6 Q W 6 U 
+34 36 25 45 35 20 4E 50 43 37 31 41 4C 36 5A 4F    4 6 % E 5   N P C 7 1 A L 6 Z O 
+36 36 58 36 39 2F 39 2D 33 41 4B 49 36 33 5A 4D    6 6 X 6 9 / 9 - 3 A K I 6 3 Z M 
+4C 45 51 5A 37 36 55 57 36 2A 45 39 39 51 39 45    L E Q Z 7 6 U W 6 * E 9 9 Q 9 E 
+24 42 44 5A 49 45 39 4A 2F 4D 4A 46 5A 49 2A 49    $ B D Z I E 9 J / M J F Z I * I 
+42 2A 4E 49 5A 30 4B 41 34 32 42 4B 42 54 4B 42    B * N I Z 0 K A 4 2 B K B T K B 
+41 34 32 32 39 42 43 57 4B 58 53 4A 47 5A 49 38    A 4 2 2 9 B C W K X S J G Z I 8 
+44 4A 43 30 4A 2A 50 49 54 51 54 41 2E 53 47 44    D J C 0 J * P I T Q T A . S G D 
+33 32 4F 49 5A 30 4B 25 47 41 2B 45 53 43 51 53    3 2 O I Z 0 K % G A + E S C Q S 
+45 54 43 25 45 53 49 53 54 52 20 53 52 36 33 2B    E T C % E S I S T R   S R 6 3 + 
+4E 54 57 56 42 44 4B 42 59 4C 44 4E 34 44 45 31    N T W V B D K B Y L D N 4 D E 1 
+44 2D 4E 53 4C 46 55 4B 51 39 42 2E 55 50 2D 31    D - N S L F U K Q 9 B . U P - 1 
+41 5A 4A 53 39 4A 45 36 46 2A 5A 4A 4B 45 37 2B    A Z J S 9 J E 6 F * Z J K E 7 + 
+33 47 33 55 55 53 2E 37 37 53 55 31 51 55 42 35    3 G 3 U U S . 7 7 S U 1 Q U B 5 
+4A 50 4E 32 52 2A 4F 35 35 4F 4F 51 43 2A 33 4A    J P N 2 R * O 5 5 O O Q C * 3 J 
+53 48 35 33 53 46 4E 2A 34 36 50 42 4D 5A 4C 2B    S H 5 3 S F N * 4 6 P B M Z L + 
+48 32 25 2D 54 24 4C 56 56 56 31 59 3A 44 33 54    H 2 % - T $ L V V V 1 Y : D 3 T 
+33 41 50 37 42 46 50 49 37 53 59 4D 30 2F 4B 4F    3 A P 7 B F P I 7 S Y M 0 / K O 
+2B 44 47                                           + D G 
+
+The <span style="background-color: orange;">'HC1:'</span> signature is found in the first characters, 'HC1' stands for Health Certificate version 1. Let's remove it...
+
+A QR-code only allows for 45 different characters (letters, figures, some punctuation characters)... But the health certificate contains binary information, so, this binary information is 'encoded' in base45 (thanks to my friend Patrik's IETF draft <a href='https://datatracker.ietf.org/doc/html/draft-faltstrom-base45-06'>draft-faltstrom-base45</a>).
+Base45 decoding... The decoded message is now (many more binary characters represented as '.' on the right-hand column and also less octects):
+<span style="background-color: lightblue;">78 </span>DA BB D4 E2 BB 88 51 8D C5 63 4A E1 C5 96 53    <span style="background-color: lightblue;">x </span>. . . . . . Q . . c J . . . S 
+B6 92 19 0B 22 19 F9 97 30 26 39 B9 B2 48 25 5C    . . . . " . . . 0 & 9 . . H % \ 
+DD F2 9D 4D 2A 61 9D FA 77 4B 46 E6 85 8C 4B 12    . . . M * a . . w K F . . . K . 
+4B 1A 57 26 25 67 56 C8 19 18 3A B9 86 F9 38 B9    K . W & % g V . . . : . . . 8 . 
+78 FA FA 18 79 07 19 7A BA 79 07 04 38 07 47 58    x . . . y . . z . y . . 8 . G X 
+F8 07 BA 19 2B 7B 27 25 E7 03 B5 27 A5 14 1D 28    . . . . + { ' % . . . ' . . . ( 
+31 32 30 32 D4 35 30 D5 35 34 0D 31 B4 B4 32 32    1 2 0 2 . 5 0 . 5 4 . 1 . . 2 2 
+B4 32 32 8A 4A CA 2C 4E 0D 76 D6 05 AA 28 4E 46    . 2 2 . J . , N . v . . . ( N F 
+A8 30 32 0D 31 B0 B4 32 30 B2 32 30 8F 4A 2A 49    . 0 2 . 1 . . 2 0 . 2 0 . J * I 
+CE B0 30 34 34 33 30 B6 34 4E 2A 49 CF B4 30 31    . . 0 4 4 3 0 . 4 N * I . . 0 1 
+30 35 B6 34 30 30 4B 2A 29 CA 34 32 33 30 31 34    0 5 . 4 0 0 K * ) . 4 2 3 0 1 4 
+35 30 30 48 2A 29 C9 F0 09 30 33 31 33 D1 35 49    5 0 0 H * ) . . . 0 3 1 3 . 5 I 
+4E C9 4F CA 32 B4 B4 30 D0 35 30 D4 35 34 49 CE    N . O . 2 . . 0 . 5 0 . 5 4 I . 
+4B CC 5D 92 94 96 97 EE 9A 54 94 98 5A 54 92 94    K . ] . . . . . . T . . Z T . . 
+9E 57 10 90 5A 92 5A A4 10 90 58 9A A3 E0 9B 58    . W . . Z . Z . . . X . . . . X 
+94 99 98 9C 96 57 92 EE EA 14 E4 E8 1A 14 92 9C    . . . . . W . . . . . . . . . . 
+9E 57 52 10 E0 1A E2 1A 64 13 E0 18 EA 63 E3 EB    . W R . . . . . d . . . . c . . 
+18 E4 E9 98 5C 96 5A 94 6A A8 67 A0 67 10 E1 B0    . . . . \ . Z . j . g . g . . . 
+F0 06 4B D7 F4 BB 0F 37 9C 7C 97 FC 77 C3 9C 99    . . K . . . . 7 . | . . w . . . 
+39 E9 7F 3F F2 97 3E DD F2 41 F1 E1 97 37 13 F6    9 .  ? . . > . . A . . . 7 . . 
+C4 CE BE BE 63 96 96 F9 2A A6 7B 96 26 96 5B 6E    . . . . c . . . * . { . & . [ n 
+AC 5A 12 F7 EC C0 F9 0D 0D 7B 6E B3 1C D7 3B CE    . Z . . . . . . . { n . . . ; . 
+C8 6F DE C9 04 00 C1 87 81 01                      . o . . . . . . . . 
+
+The first octet is <span style="background-color: lightblue;">0x78</span>, which is a sign for ZLIB compression. After decompression, the length went from 362 to 357 octets:
+Obviously, in this case, the compression was rather useless as the 'compressed' length is larger than the 'uncompressed' one... Compression efficiency usually depends on the text.
+<span style="background-color: yellow;">D2 </span>84 4D A2 01 26 04 48 94 71 D1 84 CA 3D 19 68    <span style="background-color: yellow;">. </span>. M . . & . H . q . . . = . h 
+A0 59 01 0F A4 01 62 42 45 04 1A 60 D5 B4 F7 06    . Y . . . . b B E . . ` . . . . 
+1A 60 AE 27 F7 39 01 03 A1 01 A4 61 74 81 A9 62    . ` . ' . 9 . . . . . a t . . b 
+63 69 78 1E 30 31 42 45 56 4C 42 44 49 4D 4C 32    c i x . 0 1 B E V L B D I M L 2 
+4B 52 31 49 46 4B 50 50 43 53 58 38 4F 51 46 33    K R 1 I F K P P C S X 8 O Q F 3 
+23 4B 62 63 6F 62 42 45 62 64 72 C0 74 32 30 32    # K b c o b B E b d r . t 2 0 2 
+31 2D 30 35 2D 31 35 54 31 39 3A 32 31 3A 32 32    1 - 0 5 - 1 5 T 1 9 : 2 1 : 2 2 
+5A 62 69 73 65 53 43 2D 42 45 62 73 63 C0 74 32    Z b i s e S C - B E b s c . t 2 
+30 32 31 2D 30 35 2D 32 35 54 30 39 3A 30 32 3A    0 2 1 - 0 5 - 2 5 T 0 9 : 0 2 : 
+30 37 5A 62 74 63 68 38 31 31 36 30 33 39 33 62    0 7 Z b t c h 8 1 1 6 0 3 9 3 b 
+74 67 69 38 34 30 35 33 39 30 30 36 62 74 72 69    t g i 8 4 0 5 3 9 0 0 6 b t r i 
+32 36 30 34 31 35 30 30 30 62 74 74 68 4C 50 36    2 6 0 4 1 5 0 0 0 b t t h L P 6 
+34 36 34 2D 34 63 64 6F 62 6A 31 39 38 30 2D 30    4 6 4 - 4 c d o b j 1 9 8 0 - 0 
+31 2D 31 34 63 6E 61 6D A4 62 66 6E 67 45 62 72    1 - 1 4 c n a m . b f n g E b r 
+61 65 72 74 62 67 6E 70 50 65 74 65 72 20 50 61    a e r t b g n p P e t e r   P a 
+75 6C 20 4D 61 72 69 61 63 66 6E 74 67 45 42 52    u l   M a r i a c f n t g E B R 
+41 45 52 54 63 67 6E 74 70 50 45 54 45 52 3C 50    A E R T c g n t p P E T E R < P 
+41 55 4C 3C 4D 41 52 49 41 63 76 65 72 65 31 2E    A U L < M A R I A c v e r e 1 . 
+30 2E 30 58 40 A1 D8 04 8A 97 DD E1 B0 C9 EE 63    0 . 0 X @ . . . . . . . . . . c 
+FD B0 9C 99 6C 67 FD F1 0F 75 E5 B4 F0 21 E1 F4    . . . . l g . . . u . . . ! . . 
+EC 90 BC 5D 9B D7 B8 9A 2A 37 AA 02 DE 39 34 39    . . . ] . . . . * 7 . . . 9 4 9 
+B4 D8 AA A4 5E E6 C0 CF B0 80 BC DB 04 C7 2E C7    . . . . ^ . . . . . . . . . . . 
+01 0F 37 89 02                                     . . 7 . . 
+
+Interpreting the message as Concise Binary Object Representation (CBOR), another IETF standards by my friends Carsten and Paul <a href='https://datatracker.ietf.org/doc/html/rfc7049'>RFC 7049</a>... The first byte is <span style="background-color: yellow;">D2</span> and is encoded as follow:
+ - most significant 3 bits ==  6, which is a tag;
+ - least significant 5 bits == 18 == 0x12.
+As CBOR tag is 18 == 0x12 (see IANA <a href='https://www.iana.org/assignments/cbor-tags/cbor-tags.xhtml'>registry</a>), hence it is a CBOR Object Signing and Encryption (COSE) Single Signer Data Object message, another IETF standards by late Jim Schaad <a href='https://datatracker.ietf.org/doc/html/rfc8152'>RFC 8152</a>
+
+Checking the COSE structure (ignoring the signature) of the CBOR Web Token (yet another IETF standards <a href='https://datatracker.ietf.org/doc/html/rfc8392'>RFC 8392</a>)...
+	COSE Key Id(KID): 0x9471D184CA3D1968 (KID is the first 8 bytes of the SHA256 of the certificate, list of trusted KIDs is at <a href='https://verifier-api.coronacheck.nl/v4/verifier/public_keys'>https://verifier-api.coronacheck.nl/v4/verifier/public_keys</a>).
+	<span style="color: red;">!!! This KeyId  is unknown  -- cannot verify!!!</span>
+	COSE Algorithm: Es256 (ECDSA w/ SHA-256)
+
+A COSE signed messages contains 'claims' protected/signed by the CBOR Web Token in this case what is certified valid by a EU Member State. The CBOR-encoded claims payload is:
+A4 01 62 42 45 04 1A 60 D5 B4 F7 06 1A 60 AE 27    . . b B E . . ` . . . . . ` . ' 
+F7 39 01 03 A1 01 A4 61 74 81 A9 62 63 69 78 1E    . 9 . . . . . a t . . b c i x . 
+30 31 42 45 56 4C 42 44 49 4D 4C 32 4B 52 31 49    0 1 B E V L B D I M L 2 K R 1 I 
+46 4B 50 50 43 53 58 38 4F 51 46 33 23 4B 62 63    F K P P C S X 8 O Q F 3 # K b c 
+6F 62 42 45 62 64 72 C0 74 32 30 32 31 2D 30 35    o b B E b d r . t 2 0 2 1 - 0 5 
+2D 31 35 54 31 39 3A 32 31 3A 32 32 5A 62 69 73    - 1 5 T 1 9 : 2 1 : 2 2 Z b i s 
+65 53 43 2D 42 45 62 73 63 C0 74 32 30 32 31 2D    e S C - B E b s c . t 2 0 2 1 - 
+30 35 2D 32 35 54 30 39 3A 30 32 3A 30 37 5A 62    0 5 - 2 5 T 0 9 : 0 2 : 0 7 Z b 
+74 63 68 38 31 31 36 30 33 39 33 62 74 67 69 38    t c h 8 1 1 6 0 3 9 3 b t g i 8 
+34 30 35 33 39 30 30 36 62 74 72 69 32 36 30 34    4 0 5 3 9 0 0 6 b t r i 2 6 0 4 
+31 35 30 30 30 62 74 74 68 4C 50 36 34 36 34 2D    1 5 0 0 0 b t t h L P 6 4 6 4 - 
+34 63 64 6F 62 6A 31 39 38 30 2D 30 31 2D 31 34    4 c d o b j 1 9 8 0 - 0 1 - 1 4 
+63 6E 61 6D A4 62 66 6E 67 45 62 72 61 65 72 74    c n a m . b f n g E b r a e r t 
+62 67 6E 70 50 65 74 65 72 20 50 61 75 6C 20 4D    b g n p P e t e r   P a u l   M 
+61 72 69 61 63 66 6E 74 67 45 42 52 41 45 52 54    a r i a c f n t g E B R A E R T 
+63 67 6E 74 70 50 45 54 45 52 3C 50 41 55 4C 3C    c g n t p P E T E R < P A U L < 
+4D 41 52 49 41 63 76 65 72 65 31 2E 30 2E 30       M A R I A c v e r e 1 . 0 . 0 
+
+Decoding the CBOR-encoded COSE claims into a more readable JSON format:
+	Issuer              : BE
+	Expiration time     : 2021-06-25 10:50:31 UTC <span style="color: red ;">!!! This certificate is no more valid!!!</span>
+	Issued At           : 2021-05-26 10:50:31 UTC
+	Health payload JSON : 
+{
+    "dob": "1980-01-14",
+    "nam": {
+        "fn": "Ebraert",
+        "fnt": "EBRAERT",
+        "gn": "Peter Paul Maria",
+        "gnt": "PETER&lt;PAUL&lt;MARIA"
+    },
+    "t": [
+        {
+            "ci": "01BEVLBDIML2KR1IFKPPCSX8OQF3#K",
+            "co": "BE",
+            "dr": "2021-05-15T19:21:22+00:00",
+            "is": "SC-BE",
+            "sc": "2021-05-25T09:02:07+00:00",
+            "tc": "81160393",
+            "tg": "840539006",
+            "tr": "260415000",
+            "tt": "LP6464-4"
+        }
+    ],
+    "ver": "1.0.0"
+}
+
+
+Health Certificate
+Using the <a href='https://ec.europa.eu/health/sites/default/files/ehealth/docs/covid-certificate_json_specification_en.pdf'>EU JSON specification</a>.
+
+Last name: Ebraert
+First name: Peter Paul Maria
+Name as in passport (ICAO 9303 transliteration): EBRAERT&lt;&lt;PETER&lt;PAUL&lt;MARIA
+Birth date: 1980-01-14
+
+Test for COVID-19 / Nucleic acid amplification with probe detection
+	Test taken on: 2021-05-25 09:02:07+00:00 by 81160393 in Belgium
+	Test result: Not detected

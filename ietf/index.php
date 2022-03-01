@@ -1,6 +1,6 @@
 <?php
 # HTTP/2 push of CSS via header()
-header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image') ;
+header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script') ;
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -22,7 +22,8 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.
 require_once('/var/www/vendor/autoload.php') ;
 use GeoIp2\Database\Reader;
 $reader = new Reader('/var/www/matomo/misc/DBIP-City.mmdb') ;
-$ip = $_SERVER['REMOTE_ADDR'] ;
+$ip = $_SERVER['REMOTE_ADDR'];
+$ipv4only_message = (strpos($ip, ':') === false) ? '<p><mark>Humm you are interested in IETF work but only use the legacy IPv4 protocol?</mark></p>' : '' ;
 $mycountry = $reader->city($ip) ;
 $mycountry = $mycountry->country->isoCode ;
 ?>
@@ -123,7 +124,7 @@ function drawChart() {
 		"<li>IETF venue country: " + ietfCountry + " (" + covid_data[ietfCountry].location + ") with " + Math.round(covid_data[ietfCountry].new_cases_smoothed_per_million) + "</li>" +
 		"</ul></p>" +
 		"<p>Our world of data has a nice historical graphic for the new cases for all countries with more than 5 IETF participants: <a href='" + owidUrl +
-		"' target='_window'>here <span class='glyphicon glyphicon-new-window'></span></a>.</p><div class='text-center'><a href='" + owidUrl + "' target='_window'><img src='owid.png' class='img-fluid rounded' width='50%' height='auto'/></a></div>"
+		"' target='_window'>here</a><span class='glyphicon glyphicon-new-window'></span>.</p><div class='text-center'><a href='" + owidUrl + "' target='_window'><img src='owid.png' class='img-fluid rounded' width='50%' height='auto'/></a></div>"
 	text = document.getElementById('date') ;
 	text.innerHTML = collectionDate + ' Europe/Brussels (CET)' ;
 }
@@ -266,8 +267,9 @@ function onLoad() {
 
 </div> <!-- row -->
 <hr>
+<?=$ipv4only_message?>
 <em>Registration data collected on <span id="date"></span> (hourly refresh) by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>.</em>
-<!-- Matomo Image Tracker-->
+<!-- Matomo Image Tracker and warning about JS requirement -->
 <noscript><img referrerpolicy="no-referrer-when-downgrade" src="https://analytics.vyncke.org/matomo.php?idsite=6&amp;rec=1" style="border:0" alt="" />
 <b>This site requires javascript.</b></noscript>
 <!-- End Matomo -->

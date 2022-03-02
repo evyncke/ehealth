@@ -88,3 +88,5 @@ with open('wgchairs.js', 'w', encoding = 'utf-8') as f:
     f.write("var wgChairs = ")
     json.dump(cachedPersons, f, ensure_ascii = False, indent = 2)
     f.write(";")
+    now = datetime.datetime.now(datetime.timezone.utc)
+    f.write("\nvar wgChairsCollectionDate = '{}';".format(now.isoformat(timespec='seconds')))

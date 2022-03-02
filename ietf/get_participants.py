@@ -47,6 +47,6 @@ print("] ;")
 with open('remote.json', 'w', encoding = 'utf-8') as f:
         json.dump(participants, f, ensure_ascii = False, indent = 2)
 
-today = datetime.datetime.today()
-print("var collectionDate = '{}';".format(str(today))) 
+now = datetime.datetime.now(datetime.timezone.utc)
+print("var registrationCollectionDate = '{}';".format(now.isoformat(timespec='seconds')))
 

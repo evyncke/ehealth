@@ -3,6 +3,7 @@
 from lxml import etree
 from urllib import request
 from datetime import date
+import datetime
 from dateutil.relativedelta import relativedelta
 import ast
 import json
@@ -41,3 +42,5 @@ with open('draftauthors.js', 'w', encoding = 'utf-8') as f:
     f.write("var draftAuthors = ")
     json.dump(cachedPersons, f, ensure_ascii = False, indent = 2)
     f.write(";")
+    now = datetime.datetime.now(datetime.timezone.utc)
+    f.write("\nvar draftAuthorsCollectionDate = '{}';".format(now.isoformat(timespec='seconds')))

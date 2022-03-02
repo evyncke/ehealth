@@ -49,10 +49,16 @@ google.charts.load('current', {'packages':['corechart']});
 // Set a callback to run when the Google Visualization API is loaded.
 google.charts.setOnLoadCallback(loadCovidData);
 
-shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fred'], ['James', 'Jim'], ['Timothy','Tim']]) ;
+shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fred'], ['James', 'Jim'], ['Timothy','Tim'],
+	['Michael', 'Mike'], ['Mickael', 'Mike'], ['Stephen', 'Steve'], ['Stephan', 'Steve'], ['Robert', 'Bob'],
+	['Nicolas', 'Nick'], ['Nicholas', 'Nick'], ['Nicklas', 'Nick'], ['Wesley', 'Wes'],
+	['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],
+	['Thomas', 'Tom'], ['David', 'Dave'], ['Bernard', 'Bernie'], ['Peter', 'Pete']]) ;
 // Find a participants based on "first last" in the participants table containing lastname firstname
 function findParticipant(fullName, table) {
 	if (! fullName) return false ;
+	// Exception
+	if (fullName == 'Ines Robles') fullName = 'Maria Ines Robles' ;
 	// Some names out of Datatrack have a middle initial, which is not used in the registration
 	var tokens = fullName.split(' ') ;
 	if (shortNames.get(tokens[0])) tokens[0] = shortNames.get(tokens[0]) ;
@@ -125,8 +131,12 @@ function drawChart() {
 		"</ul></p>" +
 		"<p>Our world of data has a nice historical graphic for the new cases for all countries with more than 5 IETF participants: <a href='" + owidUrl +
 		"' target='_window'>here</a><span class='glyphicon glyphicon-new-window'></span>.</p><div class='text-center'><a href='" + owidUrl + "' target='_window'><img src='owid.png' class='img-fluid rounded' width='50%' height='auto'/></a></div>"
-	text = document.getElementById('date') ;
-	text.innerHTML = collectionDate + ' Europe/Brussels (CET)' ;
+	text = document.getElementById('registrationDate') ;
+	text.innerHTML = registrationCollectionDate + ' (UTC)' ;
+	text = document.getElementById('wgChairsDate') ;
+	text.innerHTML = wgChairsCollectionDate + ' (UTC)' ;
+	text = document.getElementById('draftAuthorsDate') ;
+	text.innerHTML = draftAuthorsCollectionDate + ' (UTC)' ;
 }
 
 function displayCategory(elemId, name, onsite, remote, unknown, total) {
@@ -178,6 +188,7 @@ function onLoad() {
 		else if (findParticipant(leader.ascii, participantsRemote))
 			wgChairsRemote++ ;
 		else {
+			console.log(leader.name + ' not found') ;
 			wgChairsUnknown++ ;
 		}
 		wgChairsTotal ++ ;
@@ -268,7 +279,9 @@ function onLoad() {
 </div> <!-- row -->
 <hr>
 <?=$ipv4only_message?>
-<em>Registration data collected on <span id="date"></span> (hourly refresh) by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>.</em>
+<p>If you want to know more on how IETF technologies are used worldwide for "COVID-19 certificates", here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/>
+<em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>.
+The power of open data!</em></p>
 <!-- Matomo Image Tracker and warning about JS requirement -->
 <noscript><img referrerpolicy="no-referrer-when-downgrade" src="https://analytics.vyncke.org/matomo.php?idsite=6&amp;rec=1" style="border:0" alt="" />
 <b>This site requires javascript.</b></noscript>

@@ -54,7 +54,11 @@ shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fr
 	['Michael', 'Mike'], ['Mickael', 'Mike'], ['Stephen', 'Steve'], ['Stephan', 'Steve'], ['Robert', 'Bob'],
 	['Nicolas', 'Nick'], ['Nicholas', 'Nick'], ['Nicklas', 'Nick'], ['Wesley', 'Wes'],
 	['Edward', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'],
-	['Alexandre', 'Alex'], ['Alexander', 'Alex'],
+	['Louis', 'Lou'], ['Godred', 'Gorry'], ['Russell', 'Russ'], ['Lester', 'Les'],
+	['André', 'Andre'], ['Luc André', 'Luc Andre'],
+	['Göran', 'Goeran'], ['Hernâni', 'Hernani'], ['Frédéric', 'Frederic'],
+	['Geoffrey', 'Geoff'], ['Balázs', 'Balazs'], ['János', 'Janos'],
+	['Alexandre', 'Alex'], ['Alexander', 'Alex'],['Gregory', 'Greg'],['Gregory', 'Greg'],
 	['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],
 	['Thomas', 'Tom'], ['David', 'Dave'], ['Bernard', 'Bernie'], ['Peter', 'Pete'], ['Donald', 'Don']]) ;
 // Find a participants based on "first last" in the participants table containing lastname firstname
@@ -62,6 +66,8 @@ function findParticipant(fullName, table) {
 	if (! fullName) return false ;
 	// Exceptions
 	if (fullName == 'Ines Robles') fullName = 'Maria Ines Robles' ;
+	if (fullName == 'Spencer Dawkins') fullName = 'Paul Spencer Dawkins' ;
+	if (fullName == 'Jose Ignacio Alvarez-Hamelin') fullName = 'J. Ignacio Alvarez-Hamelin' ;
 	// Some names out of Datatrack have a middle initial, which is not used in the registration
 	var tokens = fullName.split(' ') ;
 	if (shortNames.get(tokens[0])) tokens[0] = shortNames.get(tokens[0]) ;
@@ -78,6 +84,19 @@ function findParticipant(fullName, table) {
 	return false ;
 }
 
+function fuzzyMatch(fullName) {
+	console.log('Not found by exact match: ' + fullName) ;
+	if (! fullName) return ;
+	// participantsOnsite
+//	var table = participantsOnsite ;
+	var table = participantsRemote ;
+	var tokens = fullName.split(' ') ;
+	var lastName = tokens[tokens.length-1].toUpperCase() ;
+	for (let i = 0; i < table.length ; i++) {
+		if (lastName == table[i][0].toUpperCase()) 
+			console.log('  Fuzzy match with ' + table[i][1] + ' / ' + table[i][0]) ;
+	}
+}
 
 // Callback that creates and populates a data table,
 // instantiates the pie chart, passes in the data and
@@ -169,8 +188,10 @@ function onLoad() {
 			leadersRemote++ ;
 		else if (findParticipant(leader.ascii, participantsRemote))
 			leadersRemote++ ;
-		else
+		else {
 			leadersUnknown++ ;
+			fuzzyMatch(leader.name) ;
+		}
 		leadersTotal ++ ;
 	}
 	displayCategory('leaders', 'IESG/IAB members', leadersOnsite, leadersRemote, leadersUnknown, leadersTotal) ;
@@ -215,7 +236,7 @@ function onLoad() {
 				wgChairsRemoteList[wgName]++ ;
 			}
 		} else {
-//			console.log(leader.name + ' not found') ;
+//			fuzzyMatch(leader.name) ;
 			wgChairsUnknown++ ;
 		}
 		wgChairsTotal ++ ;
@@ -229,9 +250,9 @@ function onLoad() {
 		else if (wgChairsRemoteList[wg] > 0) onSiteRemoteWG.push(wg) ;
 		else nobodyWG.push(wg) ;
 	}
-	document.getElementById('wg_chairs').innerHTML += '<p>List of WG where at least one chair will be present on site: ' + onSiteWG.sort().join(', ') + '.</p>' ;
-	document.getElementById('wg_chairs').innerHTML += '<p>List of WG where at least one chair will be present remote and not on site: ' + onSiteRemoteWG.sort().join(', ') + '.</p>' ;
-	document.getElementById('wg_chairs').innerHTML += '<p>List of WG where no chair has registered yet: ' + nobodyWG.sort().join(', ') + '.</p>' ;
+	document.getElementById('onsite_chairs_text').innerHTML = onSiteWG.sort().join(', ') ;
+	document.getElementById('remote_chairs_text').innerHTML = onSiteRemoteWG.sort().join(', ')  ;
+	document.getElementById('no_chairs_text').innerHTML = nobodyWG.sort().join(', ') ;
 
 
 	// Let's work on the WG chairs presence
@@ -246,7 +267,7 @@ function onLoad() {
 		else if (findParticipant(author.name, participantsRemote))
 			draftAuthorsRemote++ ;
 		else {
-//			console.log(name + ' not found') ;
+			fuzzyMatch(author.name) ;
 			draftAuthorsUnknown++ ;
 		}
 		draftAuthorsTotal ++ ;
@@ -290,28 +311,52 @@ function onLoad() {
 <div class="col-sm-12 col-lg-6 col-xxl-4">
 <h2>I* Participation</h2>
 <div id="leaders">Please wait while consolidating the data...</div>
-	<div id="leadersProgressBar" class="progress" style="height: 10px;">
-		<div id="leadersOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
-		<div id="leadersRemote" class="progress-var" style="width: 0%; background-color: orange;"></div>
-	</div> <!-- leadersProgressBar -->
+<div id="leadersProgressBar" class="progress" style="height: 10px;">
+	<div id="leadersOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
+	<div id="leadersRemote" class="progress-var" style="width: 0%; background-color: orange;"></div>
+</div> <!-- leadersProgressBar -->
 
 <hr>
 
 <h2>Working Groups Chairs Participation</h2>
 <div id="wg_chairs">Please wait while consolidating the data...</div>
-	<div id="wg_chairsProgressBar" class="progress" style="height: 10px;">
-		<div id="wg_chairsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
-		<div id="wg_chairsRemote" class="progress-var" style="width: 0%; background-color: orange;"></div>
-	</div> <!-- wg_chairsProgressBar -->
+
+<p>
+<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#onsite_chairs">WG with at least one chair on site</button>
+<div id="onsite_chairs" class="collapse">
+	<div class="card card-body">
+		<span id="onsite_chairs_text"></span>
+	</div> <!-- card -->
+</div> <!-- collapse -->
+<br/>
+<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG with at least one chair remote and no on site</button>
+<div id="remote_chairs" class="collapse">
+	<div class="card card-body">
+		<span id="remote_chairs_text"></span>
+	</div> <!-- card -->
+</div> <!-- collapse -->
+<br/>
+<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#no_chairs">WG with no registered chairs</button>
+<div id="no_chairs" class="collapse">
+	<div class="card card-body">
+		<span id="no_chairs_text"></span>
+	</div> <!-- card -->
+</div> <!-- collapse -->
+</p>
+
+<div id="wg_chairsProgressBar" class="progress" style="height: 10px;">
+	<div id="wg_chairsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
+	<div id="wg_chairsRemote" class="progress-var" style="width: 0%; background-color: orange;"></div>
+</div> <!-- wg_chairsProgressBar -->
 
 <hr>
 
 <h2>Recent Draft Authors Participation</h2>
 <div id="draft_authors">Please wait while consolidating the data...</div>
-	<div id="draft_authorsProgressBar" class="progress" style="height: 10px;">
-		<div id="draft_authorsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
-		<div id="draft_authorsRemote" class="progress-var" style="width: 0%; background-color: orange;"></div>
-	</div> <!-- wg_chairsProgressBar -->
+<div id="draft_authorsProgressBar" class="progress" style="height: 10px;">
+	<div id="draft_authorsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
+	<div id="draft_authorsRemote" class="progress-var" style="width: 0%; background-color: orange;"></div>
+</div> <!-- wg_chairsProgressBar -->
 
 </div> <!-- col -->
 

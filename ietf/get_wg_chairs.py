@@ -16,6 +16,8 @@ def getPerson(uri, email = None, role = None):
         print("Reusing cache")
         if email:
             cachedPersons[id]['email'] = email
+        if role:
+            cachedPersons[id]['role'].append(role)
         return cachedPersons[id]
     url =  "https://datatracker.ietf.org" + uri + '?format=xml'
     personTree = etree.parse(request.urlopen(url))
@@ -27,7 +29,7 @@ def getPerson(uri, email = None, role = None):
     if email:
         personDict['email'] = email
     if role:
-        personDict['role'] = role
+        personDict['role'] = [role]
     cachedPersons[int(personId.text)] = personDict
     return personDict
 
@@ -71,14 +73,13 @@ while (nextUri):
         # Type can be /api/v1/name/grouptypename/rg/ or nomcom or sdo, team, area, or wg
         groupTypeName = object.find('type').text
         groupType = re.search(r'/api/v1/name/grouptypename/(.+)/', groupTypeName).group(1)
-        cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text, 'type': groupType}
+        # Only save active WG
+        if groupType == 'wg':
+            cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text, 'type': groupType}
 
 
 # Loop for all active WG
 for group in cachedGroups:
-    if (cachedGroups[group]['type'] != 'wg'):
-        continue
-    # This is an active WG, get all the chairs
     getMembers(group, 'chair')
 
 with open('wgchairs.json', 'w', encoding = 'utf-8') as f:
@@ -90,3 +91,13 @@ with open('wgchairs.js', 'w', encoding = 'utf-8') as f:
     f.write(";")
     now = datetime.datetime.now(datetime.timezone.utc)
     f.write("\nvar wgChairsCollectionDate = '{}';".format(now.isoformat(timespec='seconds')))
+
+with open('wg.json', 'w', encoding = 'utf-8') as f:
+    json.dump(cachedGroups, f, ensure_ascii = False, indent = 2)
+
+with open('wg.js', 'w', encoding = 'utf-8') as f:
+    f.write("var wgs = ")
+    json.dump(cachedGroups, f, ensure_ascii = False, indent = 2)
+    f.write(";")
+    now = datetime.datetime.now(datetime.timezone.utc)
+    f.write("\nvar wgsCollectionDate = '{}';".format(now.isoformat(timespec='seconds')))

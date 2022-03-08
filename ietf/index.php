@@ -1,6 +1,6 @@
 <?php
 # HTTP/2 push of CSS via header()
-header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script') ;
+header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script') ;
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -14,6 +14,7 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.
 	<script type="text/javascript" src="participants.js"></script>
 	<script type="text/javascript" src="leaders.js"></script>
 	<script type="text/javascript" src="wgchairs.js"></script>
+	<script type="text/javascript" src="wg.js"></script>
 	<script type="text/javascript" src="draftauthors.js"></script>
 	<script type="text/javascript" src="isoCountry.js"></script>
 <!--- Google charts -->
@@ -52,12 +53,14 @@ google.charts.setOnLoadCallback(loadCovidData);
 shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fred'], ['James', 'Jim'], ['Timothy','Tim'],
 	['Michael', 'Mike'], ['Mickael', 'Mike'], ['Stephen', 'Steve'], ['Stephan', 'Steve'], ['Robert', 'Bob'],
 	['Nicolas', 'Nick'], ['Nicholas', 'Nick'], ['Nicklas', 'Nick'], ['Wesley', 'Wes'],
+	['Edward', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'],
+	['Alexandre', 'Alex'], ['Alexander', 'Alex'],
 	['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],
-	['Thomas', 'Tom'], ['David', 'Dave'], ['Bernard', 'Bernie'], ['Peter', 'Pete']]) ;
+	['Thomas', 'Tom'], ['David', 'Dave'], ['Bernard', 'Bernie'], ['Peter', 'Pete'], ['Donald', 'Don']]) ;
 // Find a participants based on "first last" in the participants table containing lastname firstname
 function findParticipant(fullName, table) {
 	if (! fullName) return false ;
-	// Exception
+	// Exceptions
 	if (fullName == 'Ines Robles') fullName = 'Maria Ines Robles' ;
 	// Some names out of Datatrack have a middle initial, which is not used in the registration
 	var tokens = fullName.split(' ') ;
@@ -172,6 +175,14 @@ function onLoad() {
 	}
 	displayCategory('leaders', 'IESG/IAB members', leadersOnsite, leadersRemote, leadersUnknown, leadersTotal) ;
 
+	// get the list of all WG
+	wgChairsOnsiteList = []
+	wgChairsRemoteList = []
+	for (let wg in wgs) {
+		wgChairsOnsiteList[wg] = 0 ;
+		wgChairsRemoteList[wg] = 0 ;
+	}
+
 	// Let's work on the WG chairs presence
 	wgChairsOnsite = 0 ;
 	wgChairsRemote = 0 ;
@@ -179,21 +190,49 @@ function onLoad() {
 	wgChairsTotal = 0 ;
 	for (let id in wgChairs) {
 		leader = wgChairs[id] ;
-		if (findParticipant(leader.name, participantsOnsite))
+		if (findParticipant(leader.name, participantsOnsite)) {
 			wgChairsOnsite++ ;
-		else if (findParticipant(leader.ascii, participantsOnsite))
+			for (let role in leader['role']) {
+				wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				wgChairsOnsiteList[wgName]++ ;
+			}
+		} else if (findParticipant(leader.ascii, participantsOnsite)){
 			wgChairsOnsite++ ;
-		else if (findParticipant(leader.name, participantsRemote))
+			for (let role in leader['role']) {
+				wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				wgChairsOnsiteList[wgName]++ ;
+			}
+		} else if (findParticipant(leader.name, participantsRemote)){
 			wgChairsRemote++ ;
-		else if (findParticipant(leader.ascii, participantsRemote))
+			for (let role in leader['role']) {
+				wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				wgChairsRemoteList[wgName]++ ;
+			}
+		} else if (findParticipant(leader.ascii, participantsRemote)){
 			wgChairsRemote++ ;
-		else {
-			console.log(leader.name + ' not found') ;
+			for (let role in leader['role']) {
+				wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				wgChairsRemoteList[wgName]++ ;
+			}
+		} else {
+//			console.log(leader.name + ' not found') ;
 			wgChairsUnknown++ ;
 		}
 		wgChairsTotal ++ ;
 	}
 	displayCategory('wg_chairs', 'WG chairs', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal) ;
+	onSiteWG = [] ;
+	onSiteRemoteWG = [] ;
+	nobodyWG = [] ;
+	for (let wg in wgChairsOnsiteList) {
+		if (wgChairsOnsiteList[wg] > 0) onSiteWG.push(wg) 
+		else if (wgChairsRemoteList[wg] > 0) onSiteRemoteWG.push(wg) ;
+		else nobodyWG.push(wg) ;
+	}
+	document.getElementById('wg_chairs').innerHTML += '<p>List of WG where at least one chair will be present on site: ' + onSiteWG.sort().join(', ') + '.</p>' ;
+	document.getElementById('wg_chairs').innerHTML += '<p>List of WG where at least one chair will be present remote and not on site: ' + onSiteRemoteWG.sort().join(', ') + '.</p>' ;
+	document.getElementById('wg_chairs').innerHTML += '<p>List of WG where no chair has registered yet: ' + nobodyWG.sort().join(', ') + '.</p>' ;
+
 
 	// Let's work on the WG chairs presence
 	draftAuthorsOnsite = 0 ;

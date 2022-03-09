@@ -169,7 +169,9 @@ function displayCategory(elemId, name, onsite, remote, unknown, total) {
 		'<li>' + unknown + ' not registered yet (or <abbr title="no correlation was possible between registration and datatracker data (different writing of the first & last names)">not found</abbr>).</li>' +
 		'</ul></p>' ;
 	document.getElementById(elemId + 'Onsite').style.width = Math.round(100.0*onsite/total) + "%" ;
+	document.getElementById(elemId + 'Onsite').innerHTML = Math.round(100.0*onsite/total) + "%" ;
 	document.getElementById(elemId + 'Remote').style.width = Math.round(100.0*remote/total) + "%" ;
+	document.getElementById(elemId + 'Remote').innerHTML = Math.round(100.0*remote/total) + "%" ;
 }
 //
 function onLoad() {
@@ -311,9 +313,9 @@ function onLoad() {
 <div class="col-sm-12 col-lg-6 col-xxl-4">
 <h2>I* Participation</h2>
 <div id="leaders">Please wait while consolidating the data...</div>
-<div id="leadersProgressBar" class="progress" style="height: 10px;">
+<div id="leadersProgressBar" class="progress" style="height: 20px;">
 	<div id="leadersOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
-	<div id="leadersRemote" class="progress-var" style="width: 0%; background-color: orange;"></div>
+	<div id="leadersRemote" class="progress-bar" style="width: 0%; background-color: orange;"></div>
 </div> <!-- leadersProgressBar -->
 
 <hr>
@@ -344,18 +346,18 @@ function onLoad() {
 </div> <!-- collapse -->
 </p>
 
-<div id="wg_chairsProgressBar" class="progress" style="height: 10px;">
+<div id="wg_chairsProgressBar" class="progress" style="height: 20px;">
 	<div id="wg_chairsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
-	<div id="wg_chairsRemote" class="progress-var" style="width: 0%; background-color: orange;"></div>
+	<div id="wg_chairsRemote" class="progress-bar" style="width: 0%; background-color: orange;"></div>
 </div> <!-- wg_chairsProgressBar -->
 
 <hr>
 
 <h2>Recent Draft Authors Participation</h2>
 <div id="draft_authors">Please wait while consolidating the data...</div>
-<div id="draft_authorsProgressBar" class="progress" style="height: 10px;">
+<div id="draft_authorsProgressBar" class="progress" style="height: 20px;">
 	<div id="draft_authorsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
-	<div id="draft_authorsRemote" class="progress-var" style="width: 0%; background-color: orange;"></div>
+	<div id="draft_authorsRemote" class="progress-bar" style="width: 0%; background-color: orange;"></div>
 </div> <!-- wg_chairsProgressBar -->
 
 </div> <!-- col -->

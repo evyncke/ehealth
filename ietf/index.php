@@ -51,12 +51,13 @@ google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(loadCovidData);
 
 shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fred'], ['James', 'Jim'], ['Timothy','Tim'],
-	['Michael', 'Mike'], ['Mickael', 'Mike'], ['Stephen', 'Steve'], ['Stephan', 'Steve'], ['Robert', 'Bob'],
+	['Michael', 'Mike'], ['Mickael', 'Mike'], ['Stephen', 'Steve'], ['Stephan', 'Steve'], ['Steven', 'Steve'], ['Robert', 'Bob'],
 	['Nicolas', 'Nick'], ['Nicholas', 'Nick'], ['Nicklas', 'Nick'], ['Wesley', 'Wes'],
-	['Edward', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'],
+	['Edward', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'], ['Benjamin', 'Ben'],
 	['Louis', 'Lou'], ['Godred', 'Gorry'], ['Russell', 'Russ'], ['Lester', 'Les'],
 	['André', 'Andre'], ['Luc André', 'Luc Andre'],
 	['Göran', 'Goeran'], ['Hernâni', 'Hernani'], ['Frédéric', 'Frederic'],
+	['Olorunlob', 'Loba'], ['Bradford', 'Brad'],
 	['Geoffrey', 'Geoff'], ['Balázs', 'Balazs'], ['János', 'Janos'],
 	['Alexandre', 'Alex'], ['Alexander', 'Alex'],['Gregory', 'Greg'],['Gregory', 'Greg'],
 	['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],
@@ -163,11 +164,11 @@ function drawChart() {
 
 function displayCategory(elemId, name, onsite, remote, unknown, total) {
 	leaders = document.getElementById(elemId) ;
-	leaders.innerHTML = '<p>Out of the ' + total + ' ' + name + ', there are:<ul>' +
+	leaders.innerHTML = '<p>Out of the ' + total + ' ' + name + ', there are:</p><ul>' +
 		'<li>' + onsite + ' on site;</li>' +
 		'<li>' + remote + ' remote;</li>' +
 		'<li>' + unknown + ' not registered yet (or <abbr title="no correlation was possible between registration and datatracker data (different writing of the first & last names)">not found</abbr>).</li>' +
-		'</ul></p>' ;
+		'</ul>' ;
 	document.getElementById(elemId + 'Onsite').style.width = Math.round(100.0*onsite/total) + "%" ;
 	document.getElementById(elemId + 'Onsite').innerHTML = Math.round(100.0*onsite/total) + "%" ;
 	document.getElementById(elemId + 'Remote').style.width = Math.round(100.0*remote/total) + "%" ;
@@ -238,7 +239,7 @@ function onLoad() {
 				wgChairsRemoteList[wgName]++ ;
 			}
 		} else {
-//			fuzzyMatch(leader.name) ;
+			fuzzyMatch(leader.name) ;
 			wgChairsUnknown++ ;
 		}
 		wgChairsTotal ++ ;
@@ -269,7 +270,7 @@ function onLoad() {
 		else if (findParticipant(author.name, participantsRemote))
 			draftAuthorsRemote++ ;
 		else {
-			fuzzyMatch(author.name) ;
+//			fuzzyMatch(author.name) ;
 			draftAuthorsUnknown++ ;
 		}
 		draftAuthorsTotal ++ ;
@@ -323,28 +324,28 @@ function onLoad() {
 <h2>Working Groups Chairs Participation</h2>
 <div id="wg_chairs">Please wait while consolidating the data...</div>
 
-<p>
-<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#onsite_chairs">WG with at least one chair on site</button>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#onsite_chairs">WG with at least one chair on site</button>
 <div id="onsite_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="onsite_chairs_text"></span>
 	</div> <!-- card -->
 </div> <!-- collapse -->
-<br/>
-<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG with at least one chair remote and no on site</button>
+<br>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG with at least one chair remote and no on site</button>
 <div id="remote_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="remote_chairs_text"></span>
 	</div> <!-- card -->
 </div> <!-- collapse -->
-<br/>
-<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#no_chairs">WG with no registered chairs</button>
+<br>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#no_chairs">WG with no registered chairs</button>
 <div id="no_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="no_chairs_text"></span>
 	</div> <!-- card -->
 </div> <!-- collapse -->
-</p>
+
+<br>
 
 <div id="wg_chairsProgressBar" class="progress" style="height: 20px;">
 	<div id="wg_chairsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>

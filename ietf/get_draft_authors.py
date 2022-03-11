@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 
+#Copyright 2022 Eric Vyncke evyncke@cisco.com
+
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
 from lxml import etree
 from urllib import request
 from datetime import date
@@ -15,7 +29,6 @@ backInTime = date.today() + relativedelta(months=-4)
 nextUri= "/api/v1/submit/submission/?submission_date__gte=" + str(backInTime) + "&format=xml&limit=100&offset=0"
 while (nextUri):
     url = "https://datatracker.ietf.org" + nextUri
-    print("Getting", url)
     tree = etree.parse(request.urlopen(url))
     root = tree.getroot()
     meta = root.find('meta')
@@ -24,7 +37,6 @@ while (nextUri):
     for object in objects:
         state = object.find('state') 
         if not state.text == '/api/v1/name/draftsubmissionstatename/posted/':
-#            print(object.find('state').text, object.find('name').text)
             continue
         authors = ast.literal_eval(object.find('authors').text)
         # JSON encoded array of object authors including email and name and affiliation, let's use email as the key

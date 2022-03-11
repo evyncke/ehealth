@@ -70,12 +70,15 @@ while (nextUri):
         if not state.text == '/api/v1/name/groupstatename/active/':
             continue
         acronym = object.find('acronym') 
+        listEmail = object.find('list_email') 
         # Type can be /api/v1/name/grouptypename/rg/ or nomcom or sdo, team, area, or wg
         groupTypeName = object.find('type').text
         groupType = re.search(r'/api/v1/name/grouptypename/(.+)/', groupTypeName).group(1)
         # Only save active WG
         if groupType == 'wg':
             cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text, 'type': groupType}
+            if listEmail.text:
+                cachedGroups[acronym.text]['list_email'] = listEmail.text
 
 
 # Loop for all active WG

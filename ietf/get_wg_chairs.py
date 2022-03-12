@@ -22,6 +22,7 @@ import re
 
 cachedPersons = {}
 cachedGroups = {}
+groupsMeeting = {}
 
 def getPerson(uri, email = None, role = None):
     # uri looks like api/v1/person/person/111656/
@@ -66,6 +67,40 @@ def getMembers(groupName, roleName):
         email = re.search(r"api/v1/person/email/(.+)/$", object.find('email').text).group(1)
         getPerson(object.find('person').text, email = email, role = groupName + '-' + roleName)
 
+# Should get the meeting ID from https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1
+# Value is in <id type="integer">1532</id>
+meetingID = 1532
+
+# Read all sessions from the schedule
+nextUri= "/api/v1/meeting/session/?meeting=" + str(meetingID) + "&type=regular&format=xml&limit=100&offset=0"
+while (nextUri):
+    url = "https://datatracker.ietf.org" + nextUri
+    print("Getting", url)
+    tree = etree.parse(request.urlopen(url))
+    root = tree.getroot()
+    meta = root.find('meta')
+    nextUri = meta.find('next').text
+    objects = root.find('objects')
+    for object in objects:
+        group = object.find('group').text
+        meeting = object.find('meeting').text
+        onAgenda = object.find('on_agenda')
+        if onAgenda is None or onAgenda.text != 'True':
+            continue
+        purpose = object.find('purpose')
+        if purpose is None or purpose.text != '/api/v1/name/sessionpurposename/regular/':
+            continue
+        requestedDuration = object.find('requested_duration')
+        if requestedDuration is None or requestedDuration.text == '0:00:00':
+            continue
+        if meeting != '/api/v1/meeting/meeting/' + str(meetingID) + '/':
+            print("Unexpected meeting:", meeting)
+            continue
+        print('Group is meeting', group)
+        groupsMeeting[group] = True
+
+print(groupsMeeting)
+
 
 # Read all groups
 nextUri= "/api/v1/group/group/?format=xml&limit=200&offset=0"
@@ -78,8 +113,6 @@ while (nextUri):
     nextUri = meta.find('next').text
     objects = root.find('objects')
     for object in objects:
-        if not object.tag == 'object':
-            print('error')
         state = object.find('state') 
         if not state.text == '/api/v1/name/groupstatename/active/':
             continue
@@ -90,7 +123,17 @@ while (nextUri):
         groupType = re.search(r'/api/v1/name/grouptypename/(.+)/', groupTypeName).group(1)
         # Only save active WG
         if groupType == 'wg':
-            cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text, 'type': groupType}
+            resourceUri = object.find('resource_uri')
+            print(resourceUri)
+            if resourceUri is not None:
+                print(resourceUri.text)
+            if resourceUri is not None and resourceUri.text in groupsMeeting:
+                print(acronym.text, 'is meeting')
+                meeting = True
+            else:
+                print(acronym.text, 'is not meeting', resourceUri.text)
+                meeting = False
+            cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text, 'type': groupType, 'meeting': meeting}
             if listEmail.text:
                 cachedGroups[acronym.text]['list_email'] = listEmail.text
 

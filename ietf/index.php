@@ -263,9 +263,13 @@ function onLoad() {
 	onSiteRemoteWG = [] ;
 	nobodyWG = [] ;
 	for (let wg in wgChairsOnsiteList) {
-		if (wgChairsOnsiteList[wg] > 0) onSiteWG.push(wg) 
-		else if (wgChairsRemoteList[wg] > 0) onSiteRemoteWG.push(wg) ;
-		else nobodyWG.push(wg) ;
+		if (wgs[wg].meeting)
+			wgHTML = '<b>' + wg + '</b>' 
+		else
+			wgHTML = '<i>' + wg + '</i>' ;
+		if (wgChairsOnsiteList[wg] > 0) onSiteWG.push(wgHTML) 
+		else if (wgChairsRemoteList[wg] > 0) onSiteRemoteWG.push(wgHTML) ;
+		else nobodyWG.push(wgHTML) ;
 	}
 	document.getElementById('onsite_chairs_text').innerHTML = onSiteWG.sort().join(', ') ;
 	document.getElementById('remote_chairs_text').innerHTML = onSiteRemoteWG.sort().join(', ')  ;
@@ -318,6 +322,7 @@ function onLoad() {
 <div class="col-sm-12 col-lg-6 col-xxl-4">
 <h2>On-site participants</h2>
 <div id="pie_chart_div">Please wait while loading... if not loaded after 1 minute, please reload</div>
+<p>Hoover over one pie piece to get more information.</p>
 </div> <!-- col -->
 
 <div class="col-sm-12 col-lg-6 col-xxl-4">

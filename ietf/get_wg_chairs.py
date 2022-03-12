@@ -58,7 +58,7 @@ def getMembers(groupName, roleName):
     print("Looking for {} in {}".format(roleName, groupName))
     group = getGroupFromName(groupName)
     roleSlug = "/api/v1/name/rolename/{}/".format(roleName)
-    groupUri = "https://datatracker.ietf.org/api/v1/group/role/?format=xml&group={}&role={}".format(group['id'], roleSlug)
+    groupUri = "https://datatracker.ietf.org/api/v1/group/role/?format=xml&group={}&name={}".format(group['id'], roleName)
     groupTree = etree.parse(request.urlopen(groupUri))
     groupRoot = groupTree.getroot()
     for object in groupRoot.find('objects'):
@@ -96,11 +96,7 @@ while (nextUri):
         if meeting != '/api/v1/meeting/meeting/' + str(meetingID) + '/':
             print("Unexpected meeting:", meeting)
             continue
-        print('Group is meeting', group)
         groupsMeeting[group] = True
-
-print(groupsMeeting)
-
 
 # Read all groups
 nextUri= "/api/v1/group/group/?format=xml&limit=200&offset=0"
@@ -124,14 +120,9 @@ while (nextUri):
         # Only save active WG
         if groupType == 'wg':
             resourceUri = object.find('resource_uri')
-            print(resourceUri)
-            if resourceUri is not None:
-                print(resourceUri.text)
             if resourceUri is not None and resourceUri.text in groupsMeeting:
-                print(acronym.text, 'is meeting')
                 meeting = True
             else:
-                print(acronym.text, 'is not meeting', resourceUri.text)
                 meeting = False
             cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text, 'type': groupType, 'meeting': meeting}
             if listEmail.text:
@@ -141,6 +132,7 @@ while (nextUri):
 # Loop for all active WG
 for group in cachedGroups:
     getMembers(group, 'chair')
+    getMembers(group, 'delegate')
 
 with open('wgchairs.json', 'w', encoding = 'utf-8') as f:
     json.dump(cachedPersons, f, ensure_ascii = False, indent = 2)

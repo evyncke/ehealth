@@ -231,25 +231,29 @@ function onLoad() {
 		if (findParticipant(leader.name, participantsOnsite)) {
 			wgChairsOnsite++ ;
 			for (let role in leader['role']) {
-				wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsOnsiteList[wgName]++ ;
 			}
 		} else if (findParticipant(leader.ascii, participantsOnsite)){
 			wgChairsOnsite++ ;
 			for (let role in leader['role']) {
-				wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsOnsiteList[wgName]++ ;
 			}
 		} else if (findParticipant(leader.name, participantsRemote)){
 			wgChairsRemote++ ;
 			for (let role in leader['role']) {
-				wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsRemoteList[wgName]++ ;
 			}
 		} else if (findParticipant(leader.ascii, participantsRemote)){
 			wgChairsRemote++ ;
 			for (let role in leader['role']) {
-				wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsRemoteList[wgName]++ ;
 			}
 		} else {
@@ -258,7 +262,7 @@ function onLoad() {
 		}
 		wgChairsTotal ++ ;
 	}
-	displayCategory('wg_chairs', 'WG chairs', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal) ;
+	displayCategory('wg_chairs', 'WG chairs or delegates', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal) ;
 	onSiteWG = [] ;
 	onSiteRemoteWG = [] ;
 	nobodyWG = [] ;
@@ -343,21 +347,21 @@ function onLoad() {
 <h2>Working Groups Chairs Participation</h2>
 <div id="wg_chairs">Please wait while consolidating the data...</div>
 
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#onsite_chairs">WG with at least one chair on site</button>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#onsite_chairs">WG with at least one chair or delegate on site</button>
 <div id="onsite_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="onsite_chairs_text"></span>
 	</div> <!-- card -->
 </div> <!-- collapse -->
 <br>
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG with at least one chair remote and no on site</button>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG with at least one chair or delegate remote and no on site</button>
 <div id="remote_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="remote_chairs_text"></span>
 	</div> <!-- card -->
 </div> <!-- collapse -->
 <br>
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#no_chairs">WG with no registered chairs</button>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#no_chairs">WG with no registered chairs / delegates</button>
 <div id="no_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="no_chairs_text"></span>
@@ -387,7 +391,8 @@ function onLoad() {
 <?=$ipv4only_message?>
 <p>If you want to know more on how IETF technologies are used worldwide for "COVID-19 certificates", here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/>
 <em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>.
-The power of open data!</em></p>
+The power of open data!</em><br/>
+<small>Code is open source and store on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
 <!-- Matomo Image Tracker and warning about JS requirement -->
 <noscript><img referrerpolicy="no-referrer-when-downgrade" src="https://analytics.vyncke.org/matomo.php?idsite=6&amp;rec=1" style="border:0" alt="" />
 <b>This site requires javascript.</b></noscript>

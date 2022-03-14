@@ -14,7 +14,7 @@
 #     limitations under the License.
 #
 # HTTP/2 push of CSS via header()
-header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script') ;
+header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script') ;
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -24,6 +24,8 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Bootstrap CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<!-- Some utilities -->
+	<script type="text/javascript" src="utils.js"></script>
 <!--- get all IETF participants onsite + per country statistics + date of collection -->
 	<script type="text/javascript" src="participants.js"></script>
 	<script type="text/javascript" src="leaders.js"></script>
@@ -62,55 +64,6 @@ google.charts.load('current', {'packages':['corechart']});
 
 // Set a callback to run when the Google Visualization API is loaded.
 google.charts.setOnLoadCallback(loadCovidData);
-
-shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fred'], ['James', 'Jim'], ['Timothy','Tim'],
-	['Michael', 'Mike'], ['Mickael', 'Mike'], ['Stephen', 'Steve'], ['Stephan', 'Steve'], ['Steven', 'Steve'], ['Robert', 'Bob'],
-	['Nicolas', 'Nick'], ['Nicholas', 'Nick'], ['Nicklas', 'Nick'], ['Wesley', 'Wes'],
-	['Edward', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'], ['Benjamin', 'Ben'],
-	['Louis', 'Lou'], ['Godred', 'Gorry'], ['Russell', 'Russ'], ['Lester', 'Les'],
-	['André', 'Andre'], ['Luc André', 'Luc Andre'],['Matthew', 'Mat'],
-	['Göran', 'Goeran'], ['Hernâni', 'Hernani'], ['Frédéric', 'Frederic'],
-	['Olorunlob', 'Loba'], ['Bradford', 'Brad'],['Gábor', 'Gabor'],
-	['Geoffrey', 'Geoff'], ['Balázs', 'Balazs'], ['János', 'Janos'],
-	['Alexandre', 'Alex'], ['Alexander', 'Alex'],['Gregory', 'Greg'],['Gregory', 'Greg'],
-	['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],
-	['Thomas', 'Tom'], ['David', 'Dave'], ['Bernard', 'Bernie'], ['Peter', 'Pete'], ['Donald', 'Don']]) ;
-// Find a participants based on "first last" in the participants table containing lastname firstname
-function findParticipant(fullName, table) {
-	if (! fullName) return false ;
-	// Exceptions
-	if (fullName == 'Ines Robles') fullName = 'Maria Ines Robles' ;
-	if (fullName == 'Spencer Dawkins') fullName = 'Paul Spencer Dawkins' ;
-	if (fullName == 'Jose Ignacio Alvarez-Hamelin') fullName = 'J. Ignacio Alvarez-Hamelin' ;
-	// Some names out of Datatrack have a middle initial, which is not used in the registration
-	var tokens = fullName.split(' ') ;
-	if (shortNames.get(tokens[0])) tokens[0] = shortNames.get(tokens[0]) ;
-	var fullName2 = tokens[0] + ' ' + tokens[tokens.length-1] ;
-	fullName = fullName.toUpperCase() ;
-	fullName2 = fullName2.toUpperCase() ;
-	for (let i = 0; i < table.length; i++) {
-		if (shortNames.get(table[i][1])) table[i][1] = shortNames.get(table[i][1]) ;
-		var participantName = table[i][1] + ' ' + table[i][0] ;
-		participantName = participantName.toUpperCase() ;
-		if (fullName == participantName) return true ;
-		if (fullName2 == participantName) return true ;
-	}
-	return false ;
-}
-
-function fuzzyMatch(fullName) {
-	console.log('Not found by exact match: ' + fullName) ;
-	if (! fullName) return ;
-	// participantsOnsite
-//	var table = participantsOnsite ;
-	var table = participantsRemote ;
-	var tokens = fullName.split(' ') ;
-	var lastName = tokens[tokens.length-1].toUpperCase() ;
-	for (let i = 0; i < table.length ; i++) {
-		if (lastName == table[i][0].toUpperCase()) 
-			console.log('  Fuzzy match with ' + table[i][1] + ' / ' + table[i][0]) ;
-	}
-}
 
 // Callback that creates and populates a data table,
 // instantiates the pie chart, passes in the data and

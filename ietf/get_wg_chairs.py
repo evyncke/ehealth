@@ -122,6 +122,8 @@ while (nextUri):
             continue
         groupsMeeting[group] = True
 
+print(groupsMeeting)
+
 # Read all groups
 nextUri= "/api/v1/group/group/?format=xml&limit=200&offset=0"
 while (nextUri):
@@ -133,8 +135,10 @@ while (nextUri):
     nextUri = meta.find('next').text
     objects = root.find('objects')
     for object in objects:
+        if object.find('id').text == '2318' or object.find('id').text == '2319':
+            print(object.find('id').text, object.find('state').text, object.find('type').text)
         state = object.find('state') 
-        if not state.text == '/api/v1/name/groupstatename/active/':
+        if state.text != '/api/v1/name/groupstatename/active/' and state.text != '/api/v1/name/groupstatename/bof/':
             continue
         acronym = object.find('acronym') 
         listEmail = object.find('list_email') 
@@ -142,7 +146,7 @@ while (nextUri):
         groupTypeName = object.find('type').text
         groupType = re.search(r'/api/v1/name/grouptypename/(.+)/', groupTypeName).group(1)
         # Only save active WG
-        if groupType == 'wg' or groupType == 'bof':
+        if groupType == 'wg':
             resourceUri = object.find('resource_uri')
             if resourceUri is not None and resourceUri.text in groupsMeeting:
                 meeting = True

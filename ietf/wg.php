@@ -39,6 +39,8 @@ function onLoad() {
 
 	var text = document.getElementById('registrationDate') ;
 	text.innerHTML = registrationCollectionDate + ' (UTC)' ;
+	text = document.getElementById('wgsDate') ;
+	text.innerHTML = wgsCollectionDate + ' (UTC)' ;
 
 	var datalist = document.getElementById('wgs') ;
 	// TODO add some sorting on acronyms !
@@ -109,6 +111,12 @@ function onChange(elem) {
 	participantsOnSiteCount = 0 ; 
 	participantsRemoteCount = 0 ; 
 	participantsUnknownCount = 0 ;
+	// Check whether this is a valid WG
+	if (! wgs[elem.value]) {
+		console.log('Invalid name', elem.value) ;
+		document.getElementById('resultText').innerHTML = '<p style="color: red;">Unknown or not meeting WG/BoF ' + elem.value + '.</p>' ;
+		return ;
+	}
 	// Display progress to the user
 	document.getElementById('resultText').innerHTML = '<h2>' + wgs[elem.value].name + ' WG<h2>' ;
 	var bluesheetsFilename = wgs[elem.value].bluesheets ;
@@ -170,7 +178,10 @@ Select an IETF Working Group:
 <hr>
 <?=$ipv4only_message?>
 <p>If you want to know more on how IETF technologies are used worldwide for "COVID-19 certificates", here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/>
-<em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>, itself based on <a href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE COVID-19 Data</a>.
+<em>Registration data collected on <span id="registrationDate"></span> (hourly refresh),  WG/BoF as of <span id="wgsDate"></span> (daily refresh),
+ <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data,
+and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>,
+itself based on <a href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE COVID-19 Data</a>.
 The power of open data!</em><br/>
 <small>Code is open source and store on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
 <!-- Matomo Image Tracker and warning about JS requirement -->

@@ -25,6 +25,8 @@ cachedGroups = {}
 groupsMeeting = {}
 
 def getPerson(uri, email = None, role = None):
+    global  cachedPersons
+
     # uri looks like api/v1/person/person/111656/
     id = int(re.search(r"api/v1/person/person/(.+)/$", uri).group(1))
     if id in cachedPersons:
@@ -49,6 +51,7 @@ def getPerson(uri, email = None, role = None):
     return personDict
 
 def getGroupFromName(name):
+    global cachedGroups
     if not name in cachedGroups:
         print("Unknown name: {}".format(name))
     return cachedGroups[name]
@@ -67,12 +70,31 @@ def getMembers(groupName, roleName):
         email = re.search(r"api/v1/person/email/(.+)/$", object.find('email').text).group(1)
         getPerson(object.find('person').text, email = email, role = groupName + '-' + roleName)
 
+def getBlueSheets(groupName):
+    global cachedGroups
+    print("Looking for blue sheets for {}".format(groupName))
+    group = getGroupFromName(groupName)
+    blueSheetUri = "https://datatracker.ietf.org/api/v1/doc/document/?format=xml&group={}&type=bluesheets&time__gte=2021-11-01T00:00:00".format(group['id'])
+    tree = etree.parse(request.urlopen(blueSheetUri))
+    root = tree.getroot()
+    totalCount =  root.find('meta').find('total_count').text
+    if totalCount == '0':
+        return
+    if totalCount != "1":
+        print("Unexpected answer for the blue sheets",  root.find('meta').find('total_count').text)
+        return
+    object = root.find('objects').find('object')
+    uploadedFilename = object.find('uploaded_filename')
+    if uploadedFilename is None or uploadedFilename.text == '':
+        return
+    cachedGroups[groupName]['bluesheets'] = uploadedFilename.text
+
 # Should get the meeting ID from https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1
 # Value is in <id type="integer">1532</id>
 meetingID = 1532
 
 # Read all sessions from the schedule
-nextUri= "/api/v1/meeting/session/?meeting=" + str(meetingID) + "&type=regular&format=xml&limit=100&offset=0"
+nextUri= "/api/v1/meeting/session/?meeting=" + str(meetingID) + "&type=regular&format=xml&limit=200&offset=0"
 while (nextUri):
     url = "https://datatracker.ietf.org" + nextUri
     print("Getting", url)
@@ -133,6 +155,7 @@ while (nextUri):
 for group in cachedGroups:
     getMembers(group, 'chair')
     getMembers(group, 'delegate')
+    getBlueSheets(group)
 
 with open('wgchairs.json', 'w', encoding = 'utf-8') as f:
     json.dump(cachedPersons, f, ensure_ascii = False, indent = 2)

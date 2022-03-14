@@ -354,7 +354,7 @@ function onLoad() {
 	</div> <!-- card -->
 </div> <!-- collapse -->
 <br>
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG with at least one chair or delegate remote and no on site</button>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG with at least one chair or delegate remote but none on site</button>
 <div id="remote_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="remote_chairs_text"></span>
@@ -390,7 +390,7 @@ function onLoad() {
 <hr>
 <?=$ipv4only_message?>
 <p>If you want to know more on how IETF technologies are used worldwide for "COVID-19 certificates", here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/>
-<em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>.
+<em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>, itself based on <a href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE COVID-19 Data</a>.
 The power of open data!</em><br/>
 <small>Code is open source and store on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
 <!-- Matomo Image Tracker and warning about JS requirement -->

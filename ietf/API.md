@@ -32,4 +32,20 @@ https://datatracker.ietf.org/api/v1/meeting/session/?meeting=1532&type=regular
 <type>/api/v1/name/timeslottypename/regular/</type>
 
 
+## Bluesheets
+https://datatracker.ietf.org/api/v1/doc/document/?group=1958&type=bluesheets&offset=0
+Last one is .txt
 
+or rather https://datatracker.ietf.org/api/v1/doc/document/?group=1958&type=bluesheets&time__gte=2021-11-01T00:00:00
+to return only one..
+
+<group>/api/v1/group/group/1958/</group>
+<name>bluesheets-112-dprive-202111111200</name>
+<resource_uri>/api/v1/doc/document/bluesheets-112-dprive-202111111200/</resource_uri>
+<time>2021-11-11T07:38:55</time>
+<title>Bluesheets IETF112: dprive : Thu 12:00</title>
+<type>/api/v1/name/doctypename/bluesheets/</type>
+<uploaded_filename>bluesheets-112-dprive-202111111200-00.txt</uploaded_filename>
+
+Then use https://www.ietf.org/proceedings/112/bluesheets/ + uploaded filename
+first_name <spc> last_name <tab> affiliation <crlf>

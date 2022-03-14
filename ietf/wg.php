@@ -31,9 +31,11 @@ header('Link: </ietf/participants.js>;rel=preload;as=script,</ietf/wg.js>;rel=pr
 <?php
 $ip = $_SERVER['REMOTE_ADDR'];
 $ipv4only_message = (strpos($ip, ':') === false) ? '<p><mark>Humm you are interested in IETF work but only use the legacy IPv4 protocol?</mark></p>' : '' ;
+$queryWG = (isset($_REQUEST['wg'])) ? $_REQUEST['wg'] : '' ;
 ?>
 <script type="text/javascript">
 
+var queryWG = '<?=$queryWG?>' ;
 //
 function onLoad() {
 
@@ -52,7 +54,10 @@ function onLoad() {
 		option.text = wg.name ;
 		datalist.appendChild(option) ;
 	}
-
+	if (queryWG != '') {
+		document.getElementById('wgInput').value = queryWG ;
+		onChange(document.getElementById('wgInput')) ;
+	}
 	return ;
 } // onLoad()
 

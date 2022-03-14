@@ -122,8 +122,6 @@ while (nextUri):
             continue
         groupsMeeting[group] = True
 
-print(groupsMeeting)
-
 # Read all groups
 nextUri= "/api/v1/group/group/?format=xml&limit=200&offset=0"
 while (nextUri):

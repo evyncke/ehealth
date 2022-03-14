@@ -1,0 +1,24 @@
+<FilesMatch "isoCountry.js">
+	ExpiresActive On
+	ExpiresDefault "modification plus 1 year"
+</FilesMatch>
+<FilesMatch "participants.js">
+	ExpiresActive On
+	ExpiresDefault "modification plus 1 hour"
+</FilesMatch>
+<FilesMatch "leaders.js">
+	ExpiresActive On
+	ExpiresDefault "modification plus 1 day"
+</FilesMatch>
+<FilesMatch "wg.js">
+	ExpiresActive On
+	ExpiresDefault "modification plus 12 hours"
+</FilesMatch>
+<FilesMatch "wgchairs.js">
+	ExpiresActive On
+	ExpiresDefault "modification plus 12 hours"
+</FilesMatch>
+<FilesMatch "draftauthors.js">
+	ExpiresActive On
+	ExpiresDefault "modification plus 12 hours"
+</FilesMatch>

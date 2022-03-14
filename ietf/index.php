@@ -214,7 +214,7 @@ function onLoad() {
 		}
 		wgChairsTotal ++ ;
 	}
-	displayCategory('wg_chairs', 'WG chairs or delegates', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal) ;
+	displayCategory('wg_chairs', 'WG/BoF chairs or delegates', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal) ;
 	onSiteWG = [] ;
 	onSiteRemoteWG = [] ;
 	nobodyWG = [] ;
@@ -296,24 +296,24 @@ function onLoad() {
 
 <hr>
 
-<h2>Working Groups Chairs Participation</h2>
+<h2>Working Groups/BoF Chairs Participation</h2>
 <div id="wg_chairs">Please wait while consolidating the data...</div>
 
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#onsite_chairs">WG with at least one chair or delegate on site</button>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#onsite_chairs">WG/BoF with at least one chair or delegate on site</button>
 <div id="onsite_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="onsite_chairs_text"></span>
 	</div> <!-- card -->
 </div> <!-- collapse -->
 <br>
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG with at least one chair or delegate remote but none on site</button>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG/BoF with at least one chair or delegate remote but none on site</button>
 <div id="remote_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="remote_chairs_text"></span>
 	</div> <!-- card -->
 </div> <!-- collapse -->
 <br>
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#no_chairs">WG with no registered chairs / delegates</button>
+<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#no_chairs">WG/BoF with no registered chairs / delegates</button>
 <div id="no_chairs" class="collapse">
 	<div class="card card-body">
 		<span id="no_chairs_text"></span>

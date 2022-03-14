@@ -74,24 +74,26 @@ def getBlueSheets(groupName):
     global cachedGroups
     print("Looking for blue sheets for {}".format(groupName))
     group = getGroupFromName(groupName)
-    blueSheetUri = "https://datatracker.ietf.org/api/v1/doc/document/?format=xml&group={}&type=bluesheets&time__gte=2021-11-01T00:00:00".format(group['id'])
+    blueSheetUri = "https://datatracker.ietf.org/api/v1/doc/document/?format=xml&group={}&type=bluesheets&time__gte={}".format(group['id'], lastMeetingDate)
     tree = etree.parse(request.urlopen(blueSheetUri))
     root = tree.getroot()
-    totalCount =  root.find('meta').find('total_count').text
-    if totalCount == '0':
+    # There could be several interimes since that time...
+    for object in root.find('objects'):
+        name = object.find('name')
+        if name is None or '-interim-' in name.text:
+            continue
+        uploadedFilename = object.find('uploaded_filename')
+        if uploadedFilename is None or uploadedFilename.text == '':
+            continue
+        cachedGroups[groupName]['bluesheets'] = uploadedFilename.text
         return
-    if totalCount != "1":
-        print("Unexpected answer for the blue sheets",  root.find('meta').find('total_count').text)
-        return
-    object = root.find('objects').find('object')
-    uploadedFilename = object.find('uploaded_filename')
-    if uploadedFilename is None or uploadedFilename.text == '':
-        return
-    cachedGroups[groupName]['bluesheets'] = uploadedFilename.text
 
 # Should get the meeting ID from https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1
 # Value is in <id type="integer">1532</id>
 meetingID = 1532
+lastMeetingDate = "2021-11-01T00:00:00"
+
+# TODO should also get the start date to get back the blue sheets
 
 # Read all sessions from the schedule
 nextUri= "/api/v1/meeting/session/?meeting=" + str(meetingID) + "&type=regular&format=xml&limit=200&offset=0"
@@ -140,7 +142,7 @@ while (nextUri):
         groupTypeName = object.find('type').text
         groupType = re.search(r'/api/v1/name/grouptypename/(.+)/', groupTypeName).group(1)
         # Only save active WG
-        if groupType == 'wg':
+        if groupType == 'wg' or groupType == 'bof':
             resourceUri = object.find('resource_uri')
             if resourceUri is not None and resourceUri.text in groupsMeeting:
                 meeting = True

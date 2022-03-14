@@ -55,7 +55,6 @@ response = fetch('https://raw.githubusercontent.com/owid/covid-19-data/master/pu
 		covid_data = data ;
 		drawChart()
 		});
-// Above should probably be called from DrawChart... see https://www.javascripttutorial.net/javascript-fetch-api/
 }
 
 // Load the Visualization API and the corechart package.
@@ -69,9 +68,9 @@ shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fr
 	['Nicolas', 'Nick'], ['Nicholas', 'Nick'], ['Nicklas', 'Nick'], ['Wesley', 'Wes'],
 	['Edward', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'], ['Benjamin', 'Ben'],
 	['Louis', 'Lou'], ['Godred', 'Gorry'], ['Russell', 'Russ'], ['Lester', 'Les'],
-	['André', 'Andre'], ['Luc André', 'Luc Andre'],
+	['André', 'Andre'], ['Luc André', 'Luc Andre'],['Matthew', 'Mat'],
 	['Göran', 'Goeran'], ['Hernâni', 'Hernani'], ['Frédéric', 'Frederic'],
-	['Olorunlob', 'Loba'], ['Bradford', 'Brad'],
+	['Olorunlob', 'Loba'], ['Bradford', 'Brad'],['Gábor', 'Gabor'],
 	['Geoffrey', 'Geoff'], ['Balázs', 'Balazs'], ['János', 'Janos'],
 	['Alexandre', 'Alex'], ['Alexander', 'Alex'],['Gregory', 'Greg'],['Gregory', 'Greg'],
 	['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],

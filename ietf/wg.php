@@ -38,9 +38,9 @@ shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fr
 	['Nicolas', 'Nick'], ['Nicholas', 'Nick'], ['Nicklas', 'Nick'], ['Wesley', 'Wes'],
 	['Edward', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'], ['Benjamin', 'Ben'],
 	['Louis', 'Lou'], ['Godred', 'Gorry'], ['Russell', 'Russ'], ['Lester', 'Les'],
-	['André', 'Andre'], ['Luc André', 'Luc Andre'],
+	['André', 'Andre'], ['Luc André', 'Luc Andre'],['Matthew', 'Mat'],
 	['Göran', 'Goeran'], ['Hernâni', 'Hernani'], ['Frédéric', 'Frederic'],
-	['Olorunlob', 'Loba'], ['Bradford', 'Brad'],
+	['Olorunlob', 'Loba'], ['Bradford', 'Brad'],['Gábor', 'Gabor'],
 	['Geoffrey', 'Geoff'], ['Balázs', 'Balazs'], ['János', 'Janos'],
 	['Alexandre', 'Alex'], ['Alexander', 'Alex'],['Gregory', 'Greg'],['Gregory', 'Greg'],
 	['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],
@@ -102,12 +102,64 @@ function onLoad() {
 	return ;
 } // onLoad()
 
+bluesheetsString = '' ; // Raw format of the bluesheets
+participantsCount = 0 ; 
+participantsOnSiteCount = 0 ; 
+participantsRemoteCount = 0 ; 
+participantsUnknownCount = 0 ;
+
+function displayCategory(elemId, name, onsite, remote, unknown, total) {
+	leaders = document.getElementById(elemId) ;
+	leaders.innerHTML = '<p>Out of the ' + total + ' ' + name + ', there are:</p><ul>' +
+		'<li>' + onsite + ' on site;</li>' +
+		'<li>' + remote + ' remote;</li>' +
+		'<li>' + unknown + ' not registered yet (or <abbr title="no correlation was possible between registration and datatracker data (different writing of the first & last names)">not found</abbr>).</li>' +
+		'</ul>' ;
+	document.getElementById(elemId + 'Onsite').style.width = Math.round(100.0*onsite/total) + "%" ;
+	document.getElementById(elemId + 'Onsite').innerHTML = Math.round(100.0*onsite/total) + "%" ;
+	document.getElementById(elemId + 'Remote').style.width = Math.round(100.0*remote/total) + "%" ;
+	document.getElementById(elemId + 'Remote').innerHTML = Math.round(100.0*remote/total) + "%" ;
+} ; 
+
+function analyseLine(value, index) {
+	if (index < 6) return ; // Skip the first lines
+	if (value == '') return ; // Somes times empty lines...
+	console.log('processing', value) ;
+	var name = value.split("\t")[0] ;
+	participantsCount ++ ;
+	if (findParticipant(name, participantsOnsite)) {
+		console.log(name, " is on site") ;
+		participantsOnSiteCount++ ;
+	} else if (findParticipant(name, participantsRemote)) {
+		participantsRemoteCount++ ;
+	} else {
+		participantsUnknownCount++ ;
+		fuzzyMatch(name) ;
+	}
+}
+
+function analyseBluesheets() {
+  document.getElementById('resultText').innerHTML += '<p><em>Analysing the blue sheets....</em></p>' ;
+  var lines = bluesheetsString.split("\n") ;
+  lines.forEach(analyseLine) ;
+  // Now let's display the outcome
+  document.getElementById('participants').style.display = 'block' ;
+  displayCategory('participants', 'WG participants', participantsOnSiteCount, participantsRemoteCount, participantsUnknownCount, participantsCount) ;
+  document.getElementById('participantsProgressBar').style.display = 'flex' ;
+}
 
 function onChange(elem) {
-	console.log("onChange, elem:", elem.value) ;
+	// Hide some previously displayed elements
+	document.getElementById('participantsProgressBar').style.display = 'none' ;
+	document.getElementById('participants').style.display = 'none' ;
+	// reset some values between runs
+	participantsCount = 0 ; 
+	participantsOnSiteCount = 0 ; 
+	participantsRemoteCount = 0 ; 
+	participantsUnknownCount = 0 ;
+	// Display progress to the user
 	document.getElementById('resultText').innerHTML = '<h2>' + wgs[elem.value].name + ' WG<h2>' ;
 	var bluesheetsFilename = wgs[elem.value].bluesheets ;
-	console.log('filename', bluesheetsFilename) ;
 	if (! bluesheetsFilename) {
 		console.log('No bluesheets') ;
 		document.getElementById('resultText').innerHTML += '<p style="color: red;">Alas, no blue sheets are available for the previous WG meeting...</p>' ;
@@ -115,6 +167,13 @@ function onChange(elem) {
 	}
 	var uri = "https://www.ietf.org/proceedings/112/bluesheets/" + bluesheetsFilename ;
 	document.getElementById('resultText').innerHTML += '<p><em>Fetching <a href="' + uri + '">blue sheets</a> of the latest WG meeting.</em></p>' ;
+	var response = fetch(uri) // fetch() returns a 'Promise' object
+	        // Could use .catch(error =>) to handle errors
+		.then(response => response.text()) // now we have a 'Response' object
+		.then(data => {
+		          bluesheetsString = data ;
+			  analyseBluesheets() ;
+			}) ;
 }
 
 </script>
@@ -149,6 +208,12 @@ Select an IETF Working Group:
 <div id='resultText'>
 <p>Please select a WG in the box above</p>
 </div>
+<div id="participants"></div>
+<div id="participantsProgressBar" class="progress" style="height: 20px; display: none;">
+        <div id="participantsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
+        <div id="participantsRemote" class="progress-bar" style="width: 0%; background-color: orange;"></div>
+</div> <!-- ProgressBar -->
+
 </div> <!-- row -->
 <hr>
 <?=$ipv4only_message?>

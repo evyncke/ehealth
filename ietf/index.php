@@ -368,6 +368,8 @@ function onLoad() {
 </div> <!-- collapse -->
 
 <br>
+<a href="wg.php">More information per working group.</a>
+<br>
 
 <div id="wg_chairsProgressBar" class="progress" style="height: 20px;">
 	<div id="wg_chairsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>

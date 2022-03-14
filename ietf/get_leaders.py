@@ -36,7 +36,6 @@ def getPerson(uri, email = None, role = None):
     personRoot = personTree.getroot()
     ascii = personRoot.find('ascii')
     name = personRoot.find('name')
-#    print("name=", name.text)
     personId = personRoot.find('id')
     personDict = {'ascii': ascii.text, 'name': name.text}
     if email:
@@ -57,13 +56,10 @@ def getMembers(groupName, roleName):
     group = getGroupFromName(groupName)
     roleSlug = "/api/v1/name/rolename/{}/".format(roleName)
     groupUri = "https://datatracker.ietf.org/api/v1/group/role/?format=xml&group={}&role={}".format(group['id'], roleSlug)
-#    print("Using URI: {}".format(groupUri))
     groupTree = etree.parse(request.urlopen(groupUri))
     groupRoot = groupTree.getroot()
     for object in groupRoot.find('objects'):
         if object.find('name').text != roleSlug:
-#            print(etree.tostring(object, pretty_print = True))
-#            print("Invalid role name")
             continue
         # person email  <email>/api/v1/person/email/Zaheduzzaman.Sarker@ericsson.com/</email>\n  <group>/api/v1/group/group/2/</group>\n  <id type="integer">12152</id>\n  <name>/api/v1/name/rolename/ad/</name>\n  <person>/api/v1/person/person/109753/</person>\n 
         email = re.search(r"api/v1/person/email/(.+)/$", object.find('email').text).group(1)
@@ -77,17 +73,11 @@ tree = etree.parse(request.urlopen(url))
 root = tree.getroot()
 objects = root.find('objects')
 for object in objects:
-    if not object.tag == 'object':
-        print('error')
     state = object.find('state') 
     if not state.text == '/api/v1/name/groupstatename/active/':
-#        print("Skipping not active group")
         continue
     acronym = object.find('acronym') 
     cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text}
-
-#print("All groups")
-#print(cachedGroups)
 
 # Find all IESG members
 getMembers('ietf', 'chair')
@@ -97,13 +87,10 @@ getMembers('iab', 'member')
 #getMembers('irtf', 'chair')
 #getMembers('irsg', 'member')
 
-print("All people")
-print(cachedPersons)
-
 with open('leaders.json', 'w', encoding = 'utf-8') as f:
     json.dump(cachedPersons, f, ensure_ascii = False, indent = 2)
 
 with open('leaders.js', 'w', encoding = 'utf-8') as f:
     f.write("var leaders = ")
     json.dump(cachedPersons, f, ensure_ascii = False, indent = 2)
-    f.write(";")
+    f.write(";\n")

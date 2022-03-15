@@ -220,7 +220,7 @@ function onLoad() {
 	nobodyWG = [] ;
 	for (let wg in wgChairsOnsiteList) {
 		if (wgs[wg].meeting)
-			wgHTML = '<b>' + wg + '</b>' 
+			wgHTML = '<b><a href="wg.php?wg=' + wg + '">' + wg + '</a></b>' 
 		else
 			wgHTML = '<i>' + wg + '</i>' ;
 		if (wgChairsOnsiteList[wg] > 0) onSiteWG.push(wgHTML) 

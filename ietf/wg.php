@@ -14,7 +14,7 @@
 #     limitations under the License.
 #
 # HTTP/2 push of CSS via header()
-header('Link: </ietf/participants.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script') ;
+header('Link: </ietf/participants.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script') ;
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -27,6 +27,7 @@ header('Link: </ietf/participants.js>;rel=preload;as=script,</ietf/wg.js>;rel=pr
 <!--- get all IETF participants onsite + per country statistics + date of collection -->
 	<script type="text/javascript" src="participants.js"></script>
 	<script type="text/javascript" src="wg.js"></script>
+	<script type="text/javascript" src="wgchairs.js"></script>
 	<script type="text/javascript" src="utils.js"></script>
 <?php
 $ip = $_SERVER['REMOTE_ADDR'];
@@ -68,7 +69,7 @@ participantsRemoteCount = 0 ;
 participantsUnknownCount = 0 ;
 
 function displayCategory(elemId, name, onsite, remote, unknown, total) {
-	leaders = document.getElementById(elemId) ;
+	var leaders = document.getElementById(elemId) ;
 	leaders.innerHTML = '<p>Out of the ' + total + ' ' + name + ', there are:</p><ul>' +
 		'<li>' + onsite + ' on site;</li>' +
 		'<li>' + remote + ' remote;</li>' +
@@ -107,10 +108,33 @@ function analyseBluesheets() {
   document.getElementById('participantsProgressBar').style.display = 'flex' ;
 }
 
+function checkWGLeaders(wgName, elem) {
+	elem.insertAdjacentHTML('beforeend', '<p><em>Checking the status of chairs and delegates...</em></p>') ;
+	var msg = '<ul>' ;
+	for (let p in wgChairs) {
+		for (let role in wgChairs[p].role) {
+			var wgRole = wgChairs[p].role[role].split('-') ;
+			if (wgRole[0] != wgName)
+				continue ;
+			msg += '<li>' + wgChairs[p].name + ' (' + wgRole[1] + '): ' ;
+			if (findParticipant(wgChairs[p].name, participantsOnsite) || findParticipant(wgChairs[p].ascii_name, participantsOnsite))
+				msg += 'onsite;' ;
+			else if (findParticipant(wgChairs[p].name, participantsRemote) || findParticipant(wgChairs[p].ascii_name, participantsRemote))
+				msg += 'remote;' ;
+			else
+				msg += 'not found on registration;' ;
+			msg += '</li>' ;
+		}
+	}
+	msg += '</ul>' ;
+	elem.insertAdjacentHTML('beforeend', msg) ;
+}
+
 function onChange(elem) {
 	// Hide some previously displayed elements
 	document.getElementById('participantsProgressBar').style.display = 'none' ;
 	document.getElementById('participants').style.display = 'none' ;
+	document.getElementById('resultText').innerHTML = '' ;
 	// reset some values between runs
 	participantsCount = 0 ; 
 	participantsOnSiteCount = 0 ; 
@@ -119,19 +143,20 @@ function onChange(elem) {
 	// Check whether this is a valid WG
 	if (! wgs[elem.value]) {
 		console.log('Invalid name', elem.value) ;
-		document.getElementById('resultText').innerHTML = '<p style="color: red;">Unknown or not meeting WG/BoF ' + elem.value + '.</p>' ;
+		document.getElementById('resultText').insertAdjacentHTML('beforeend', '<p style="color: red;">Unknown or not meeting WG/BoF ' + elem.value + '.</p>') ;
 		return ;
 	}
 	// Display progress to the user
-	document.getElementById('resultText').innerHTML = '<h2>' + wgs[elem.value].name + ' WG<h2>' ;
+	document.getElementById('resultText').insertAdjacentHTML('beforeend', '<h2>' + wgs[elem.value].name + ' WG<h2>') ;
+	checkWGLeaders(elem.value, document.getElementById('resultText')) ;
 	var bluesheetsFilename = wgs[elem.value].bluesheets ;
 	if (! bluesheetsFilename) {
 		console.log('No bluesheets') ;
-		document.getElementById('resultText').innerHTML += '<p style="color: red;">Alas, no blue sheets are available for the previous WG meeting...</p>' ;
+		document.getElementById('resultText').insertAdjacentHTML('beforeend', '<p style="color: red;">Alas, no blue sheets are available for the previous WG meeting...</p>') ;
 		return ;
 	}
 	var uri = "https://www.ietf.org/proceedings/112/bluesheets/" + bluesheetsFilename ;
-	document.getElementById('resultText').innerHTML += '<p><em>Fetching <a href="' + uri + '">blue sheets</a> of the latest WG meeting.</em></p>' ;
+	document.getElementById('resultText').insertAdjacentHTML('beforeend', '<p><em>Fetching <a href="' + uri + '">blue sheets</a> of the latest WG meeting.</em></p>') ;
 	var response = fetch(uri) // fetch() returns a 'Promise' object
 	        // Could use .catch(error =>) to handle errors
 		.then(response => response.text()) // now we have a 'Response' object
@@ -164,15 +189,17 @@ function onChange(elem) {
 <div class="container-fluid">
 <h1>IETF WG Participations</h1>
 <div class="row">
-<div class="col-sm-12 col-lg-6 col-xxl-4">
+<div class="col">
 Select an IETF Working Group:
 <input list="wgs" id="wgInput" onchange="onChange(this);">
 <datalist id="wgs">
 </datalist>
 </div> <!-- col -->
-<div id='resultText'>
+</div> <!-- row -->
+<div class="row">
+<div id='resultText' class="col">
 <p>Please select a WG in the box above</p>
-</div>
+</div> <!-- resultText -->
 <div id="participants"></div>
 <div id="participantsProgressBar" class="progress" style="height: 20px; display: none;">
         <div id="participantsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>

@@ -84,7 +84,6 @@ function displayCategory(elemId, name, onsite, remote, unknown, total) {
 function analyseLine(value, index) {
 	if (index < 6) return ; // Skip the first lines
 	if (value == '') return ; // Somes times empty lines...
-	console.log('processing', value) ;
 	var name = value.split("\t")[0] ;
 	participantsCount ++ ;
 	if (findParticipant(name, participantsOnsite)) {
@@ -104,7 +103,7 @@ function analyseBluesheets() {
   lines.forEach(analyseLine) ;
   // Now let's display the outcome
   document.getElementById('participants').style.display = 'block' ;
-  displayCategory('participants', 'WG participants', participantsOnSiteCount, participantsRemoteCount, participantsUnknownCount, participantsCount) ;
+  displayCategory('participants', 'expected attendees', participantsOnSiteCount, participantsRemoteCount, participantsUnknownCount, participantsCount) ;
   document.getElementById('participantsProgressBar').style.display = 'flex' ;
 }
 

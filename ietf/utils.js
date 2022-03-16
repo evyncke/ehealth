@@ -14,14 +14,14 @@
 var shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fred'], ['James', 'Jim'], ['Timothy','Tim'],
         ['Michael', 'Mike'], ['Mickael', 'Mike'], ['Stephen', 'Steve'], ['Stephan', 'Steve'], ['Steven', 'Steve'], ['Robert', 'Bob'],
         ['Nicolas', 'Nick'], ['Nicholas', 'Nick'], ['Nicklas', 'Nick'], ['Wesley', 'Wes'],
-        ['Edward', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'], ['Benjamin', 'Ben'],
+        ['Edward', 'Ted'], ['Ed', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'], ['Benjamin', 'Ben'],
         ['Louis', 'Lou'], ['Godred', 'Gorry'], ['Russell', 'Russ'], ['Lester', 'Les'],
         ['André', 'Andre'], ['Luc André', 'Luc Andre'],['Matthew', 'Mat'],
         ['Göran', 'Goeran'], ['Hernâni', 'Hernani'], ['Frédéric', 'Frederic'],
         ['Daniel', 'Dan'], ['Jürgen', 'Jurgen'], ['Juergen', 'Jurgen'],
-        ['Jörg', 'Jorg'], ['Joerg', 'Jorg'],
+        ['Jörg', 'Jorg'], ['Joerg', 'Jorg'], ['Juan Carlos', 'Juan-Carlos'],
         ['Olorunlob', 'Loba'], ['Bradford', 'Brad'],['Gábor', 'Gabor'],
-        ['Geoffrey', 'Geoff'], ['Balázs', 'Balazs'], ['János', 'Janos'],
+        ['Geoffrey', 'Geoff'], ['Balázs', 'Balazs'], ['János', 'Janos'], ['Éric', 'Eric'],
         ['Alexandre', 'Alex'], ['Alexander', 'Alex'],['Gregory', 'Greg'],['Gregory', 'Greg'],
         ['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],
         ['Thomas', 'Tom'], ['David', 'Dave'], ['Bernard', 'Bernie'], ['Peter', 'Pete'], ['Donald', 'Don']]) ;
@@ -33,15 +33,21 @@ function findParticipant(fullName, table) {
         if (fullName == 'Ines Robles') fullName = 'Maria Ines Robles' ;
         if (fullName == 'Spencer Dawkins') fullName = 'Paul Spencer Dawkins' ;
         if (fullName == 'Jose Ignacio Alvarez-Hamelin') fullName = 'J. Ignacio Alvarez-Hamelin' ;
-        // Some names out of Datatrack have a middle initial, which is not used in the registration
-        var tokens = fullName.split(' ') ;
+	if (fullName == 'Juan-Carlos Zúñiga') fullName = 'Juan Carlos Zuniga' ;
+	if (fullName == 'Mališa Vučinić') fullName = 'Malisa Vucinic' ;
+	if (fullName == 'Carles Gomez') fullName = 'Carles Gomez Montenegro' ;
+	// Let's canonicalise the first name
+        var tokens = fullName.normalize().split(' ') ;
         if (shortNames.get(tokens[0])) tokens[0] = shortNames.get(tokens[0]) ;
+        // Some names out of Datatracker have a middle initial, which is not used in the registration
         var fullName2 = tokens[0] + ' ' + tokens[tokens.length-1] ;
         fullName = fullName.toUpperCase() ;
         fullName2 = fullName2.toUpperCase() ;
         for (let i = 0; i < table.length; i++) {
-                if (shortNames.get(table[i][1])) table[i][1] = shortNames.get(table[i][1]) ;
-                var participantName = table[i][1] + ' ' + table[i][0] ;
+		firstName = table[i][1].split(' ')[0].normalize() ; // Remove all middle initials
+		lastName = table[i][0].normalize() ;
+                if (shortNames.get(firstName)) firstName = shortNames.get(firstName) ;
+                var participantName = firstName + ' ' + lastName ;
                 participantName = participantName.toUpperCase() ;
                 if (fullName == participantName) return true ;
                 if (fullName2 == participantName) return true ;

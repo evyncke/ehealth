@@ -12,7 +12,8 @@
 //     limitations under the License.
 
 var shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick', 'Fred'], ['James', 'Jim'], ['Timothy','Tim'],
-        ['Michael', 'Mike'], ['Mickael', 'Mike'], ['Stephen', 'Steve'], ['Stephan', 'Steve'], ['Steven', 'Steve'], ['Robert', 'Bob'],
+        ['Michael', 'Mike'], ['Mickael', 'Mike'], ['Michał', 'Mike'], ['Michal', 'Mike'], ['Michel', 'Mike'],
+	['Stephen', 'Steve'], ['Stephan', 'Steve'], ['Steven', 'Steve'], ['Robert', 'Bob'],
         ['Nicolas', 'Nick'], ['Nicholas', 'Nick'], ['Nicklas', 'Nick'], ['Wesley', 'Wes'],
         ['Edward', 'Ted'], ['Ed', 'Ted'], ['Patrick', 'Pat'], ['Patrik', 'Pat'],['Deborah', 'Deb'], ['Benjamin', 'Ben'],
         ['Louis', 'Lou'], ['Godred', 'Gorry'], ['Russell', 'Russ'], ['Lester', 'Les'],

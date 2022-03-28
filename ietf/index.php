@@ -82,7 +82,7 @@ function drawChart() {
 		participants = countries[country] ;
 		participantsCount += participants ;
 		isoCode = countryISOMapping[country] ;
-		if (participants > 5)
+		if (participants >= 5)
 			largeCountries.push(isoCode) ;
 		newCases = covid_data[isoCode].new_cases_smoothed_per_million ;
 		weightedNewCases += participants * newCases ;

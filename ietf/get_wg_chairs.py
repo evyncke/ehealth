@@ -24,6 +24,9 @@ cachedPersons = {}
 cachedGroups = {}
 groupsMeeting = {}
 
+# Load the information about next/current and last meetings
+meetings = json.load(open('meetings.json'))
+
 def getPerson(uri, email = None, role = None):
     global  cachedPersons
 
@@ -56,7 +59,6 @@ def getGroupFromName(name):
         print("Unknown name: {}".format(name))
     return cachedGroups[name]
 
-
 def getMembers(groupName, roleName):
     print("Looking for {} in {}".format(roleName, groupName))
     group = getGroupFromName(groupName)
@@ -88,10 +90,8 @@ def getBlueSheets(groupName):
         cachedGroups[groupName]['bluesheets'] = uploadedFilename.text
         return
 
-# Should get the meeting ID from https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1
-# Value is in <id type="integer">1532</id>
-meetingID = 1532
-lastMeetingDate = "2021-11-01T00:00:00"
+meetingID = meetings['next']['id']
+lastMeetingDate = meetings['last']['date']
 
 # TODO should also get the start date to get back the blue sheets
 

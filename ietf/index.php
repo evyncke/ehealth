@@ -14,7 +14,7 @@
 #     limitations under the License.
 #
 # HTTP/2 push of CSS via header()
-header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script') ;
+header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script,</ietf/meetings.js>;rel=preload;as=script') ;
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -32,6 +32,7 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.
 	<script type="text/javascript" src="wgchairs.js"></script>
 	<script type="text/javascript" src="wg.js"></script>
 	<script type="text/javascript" src="draftauthors.js"></script>
+	<script type="text/javascript" src="meetings.js"></script>
 	<script type="text/javascript" src="isoCountry.js"></script>
 <!--- Google charts -->
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -46,7 +47,9 @@ $mycountry = $mycountry->country->isoCode ;
 ?>
 <script type="text/javascript">
 myCountry = countryISOMapping['<?=$mycountry?>'] ;
-ietfCountry = 'AUT' ;
+ietfCountry = countryISOMapping[meetings['next']['country2']] ;
+ietfNumber = meetings['next']['number'] ;
+document.title = 'IETF-' + ietfNumber + ' Participants and COVID-19' ;
 covid_data = '' ;
 
 function loadCovidData() {
@@ -141,7 +144,10 @@ function displayCategory(elemId, name, onsite, remote, unknown, total) {
 	document.getElementById(elemId + 'Remote').innerHTML = Math.round(100.0*remote/total) + "%" ;
 }
 //
+
 function onLoad() {
+	// Get the next/current IETF meeting
+	document.getElementById('ietfNumberSpan').innerHTML = '-' + ietfNumber ;
 	// Let's work on the I* leadership presence
 	leadersOnsite = 0 ;
 	leadersRemote = 0 ;
@@ -273,7 +279,7 @@ function onLoad() {
 </head>
 <body onload="onLoad();">
 <div class="container-fluid">
-<h1>IETF Participants and COVID-19</h1>
+<h1>IETF<span id="ietfNumberSpan"></span> Participants and COVID-19</h1>
 <div class="row">
 <div class="col-sm-12 col-lg-6 col-xxl-4">
 <h2>On-site participants</h2>

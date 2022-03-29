@@ -19,7 +19,11 @@ from urllib import request
 import json
 import datetime 
 
-url = "https://registration.ietf.org/113/participants/onsite/"
+# Load the information about next/current and last meetings
+meetings = json.load(open('meetings.json'))
+meetingNumber = meetings['next']['number']
+
+url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/onsite/"
 
 countries = {}
 participants = []
@@ -46,7 +50,7 @@ with open('onsite.json', 'w', encoding = 'utf-8') as f:
         json.dump(participants, f, ensure_ascii = False, indent = 2)
 
 # Look for remote participants
-url = "https://registration.ietf.org/113/participants/remote/"
+url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/remote/"
 
 participants = []
 root = html.parse(request.urlopen(url))

@@ -27,6 +27,8 @@ def buildMeetingObject(meetingElem):
     meetingObject = {}
     meetingObject['id'] = int(meetingElem.find('id').text)
     meetingObject['country2'] = meetingElem.find('country').text
+    meetingObject['city'] = meetingElem.find('city').text
+    meetingObject['venue_name'] = meetingElem.find('venue_name').text
     meetingObject['date'] = meetingElem.find('date').text
     meetingObject['number'] = int(meetingElem.find('number').text)
     return meetingObject 

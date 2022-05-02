@@ -17,10 +17,11 @@
 from lxml import etree
 from urllib import request
 import json
-import datetime 
+from datetime import date
 import re
 
 meetings = {}
+today = date.today()
 
 def buildMeetingObject(meetingElem):
     meetingObject = {}
@@ -30,15 +31,24 @@ def buildMeetingObject(meetingElem):
     meetingObject['number'] = int(meetingElem.find('number').text)
     return meetingObject 
 
-# Read last two meetings
-url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=2&format=xml"
+# Read previous meeting
+url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1&format=xml&date__lte=" + str(today)
 
 tree = etree.parse(request.urlopen(url))
 root = tree.getroot()
 objects = root.find('objects')
 
-meetings['next'] = buildMeetingObject(objects[0])
-meetings['last'] = buildMeetingObject(objects[1])
+meetings['last'] = buildMeetingObject(objects[0])
+
+# Read future meetings
+url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=20&format=xml&date__gte=" + str(today)
+tree = etree.parse(request.urlopen(url))
+root = tree.getroot()
+objects = root.find('objects')
+if len(objects) >= 1:
+    meetings['next'] = buildMeetingObject(objects[-1])
+else:
+    meeting['next'] = meetings['last']
 
 with open('meetings.json', 'w', encoding = 'utf-8') as f:
     json.dump(meetings, f, ensure_ascii = False, indent = 2)

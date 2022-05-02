@@ -114,6 +114,10 @@ function drawChart() {
 	var text = document.getElementById('data') ;
 	weightedNewCases /= participantsCount ;
 	owidUrl = 'https://ourworldindata.org/explorers/coronavirus-data-explorer?zoomToSelection=true&time=2021-06-16..latest&facet=none&pickerSort=desc&pickerMetric=new_cases_per_million&Metric=Confirmed+cases&Interval=7-day+rolling+average&Relative+to+Population=true&Color+by+test+positivity=false&country=' + largeCountries.join('~') ;
+	if (participantsCount == 0) {
+		text.innerHTML = '<p>No registration yet.</p>' ;
+		return ;
+	}
 	text.innerHTML = "<p>There are " + participantsCount + " in person participants. 7-day-smoothed new cases per million:<ul>" +
 		"<li>weighted on all participants: " + Math.round(weightedNewCases) + "</li>" +
 		"<li>country with minimum new cases: " + minCountry + " (" + covid_data[minCountry].location + ") with " + minNewcases + "</li>" +

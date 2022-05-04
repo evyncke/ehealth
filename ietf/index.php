@@ -49,6 +49,7 @@ $mycountry = $mycountry->country->isoCode ;
 myCountry = countryISOMapping['<?=$mycountry?>'] ;
 ietfCountry = countryISOMapping[meetings['next']['country2']] ;
 ietfNumber = meetings['next']['number'] ;
+ietfCity = meetings['next']['city'] ;
 document.title = 'IETF-' + ietfNumber + ' Participants and COVID-19' ;
 covid_data = '' ;
 
@@ -151,7 +152,7 @@ function displayCategory(elemId, name, onsite, remote, unknown, total) {
 
 function onLoad() {
 	// Get the next/current IETF meeting
-	document.getElementById('ietfNumberSpan').innerHTML = '-' + ietfNumber ;
+	document.getElementById('ietfNumberSpan').innerHTML = '-' + ietfNumber + ' (' + ietfCity + '/' + ietfCountry + ')';
 	// Let's work on the I* leadership presence
 	leadersOnsite = 0 ;
 	leadersRemote = 0 ;

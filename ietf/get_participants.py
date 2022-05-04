@@ -28,23 +28,25 @@ url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/ons
 countries = {}
 participants = []
 
+fjs = open('participants.js', 'w', encoding = 'utf-8')
+
 root = html.parse(request.urlopen(url))
-print("var participantsOnsite = [")
+fjs.write("var participantsOnsite = [")
 rows = root.iter('tr')
 next(rows) # Skip the header
 for row in rows:
-        print('["{}", "{}", "{}", "{}"],'.format(row[0].text, row[1].text, row[2].text, row[3].text))
+        fsj.write('["{}", "{}", "{}", "{}"],'.format(row[0].text, row[1].text, row[2].text, row[3].text))
         participants.append([row[0].text, row[1].text, row[2].text, row[3].text])
         country = row[3].text
         if country in countries:
             countries[country] = countries[country] + 1
         else:
             countries[country] = 1
-print("] ;")
+fjs.write("] ;\n")
 
-print("var countries = ")
-print(json.dumps(countries))
-print(";")
+fjs.write("var countries = ")
+json.dump(countries, fjs)
+fjs.write(";\n")
 
 with open('onsite.json', 'w', encoding = 'utf-8') as f:
         json.dump(participants, f, ensure_ascii = False, indent = 2)
@@ -54,17 +56,18 @@ url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/rem
 
 participants = []
 root = html.parse(request.urlopen(url))
-print("var participantsRemote = [")
+fjs.write("var participantsRemote = [")
 rows = root.iter('tr')
 next(rows) # Skip the header
 for row in rows:
-        print('["{}", "{}", "{}", "{}"],'.format(row[0].text, row[1].text, row[2].text, row[3].text))
+        fjs.write('["{}", "{}", "{}", "{}"],\n'.format(row[0].text, row[1].text, row[2].text, row[3].text))
         participants.append([row[0].text, row[1].text, row[2].text, row[3].text])
-print("] ;")
+fjs.write("] ;\n")
 
 with open('remote.json', 'w', encoding = 'utf-8') as f:
         json.dump(participants, f, ensure_ascii = False, indent = 2)
 
 now = datetime.datetime.now(datetime.timezone.utc)
-print("var registrationCollectionDate = '{}';".format(now.isoformat(timespec='seconds')))
+fjs.write("var registrationCollectionDate = '{}';\n".format(now.isoformat(timespec='seconds')))
 
+fjs.close()

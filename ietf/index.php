@@ -114,7 +114,9 @@ function drawChart() {
 
 	var text = document.getElementById('data') ;
 	weightedNewCases /= participantsCount ;
-	owidUrl = 'https://ourworldindata.org/explorers/coronavirus-data-explorer?zoomToSelection=true&time=2021-06-16..latest&facet=none&pickerSort=desc&pickerMetric=new_cases_per_million&Metric=Confirmed+cases&Interval=7-day+rolling+average&Relative+to+Population=true&Color+by+test+positivity=false&country=' + largeCountries.join('~') ;
+	var today = new Date() ;
+	var oneYearAgo = (today.getFullYear()-1) + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2) ;
+	owidUrl = 'https://ourworldindata.org/explorers/coronavirus-data-explorer?zoomToSelection=true&time=' + oneYearAgo + '..latest&facet=none&pickerSort=desc&pickerMetric=new_cases_per_million&Metric=Confirmed+cases&Interval=7-day+rolling+average&Relative+to+Population=true&Color+by+test+positivity=false&country=' + largeCountries.join('~') ;
 	if (participantsCount == 0) {
 		text.innerHTML = '<p>No registration yet.</p>' ;
 		return ;
@@ -260,7 +262,7 @@ function onLoad() {
 		}
 		draftAuthorsTotal ++ ;
 	}
-	displayCategory('draft_authors', 'draft authors in the last 4 months', draftAuthorsOnsite, draftAuthorsRemote, draftAuthorsUnknown, draftAuthorsTotal) ;
+	displayCategory('draft_authors', 'documents authors in the last 4 months', draftAuthorsOnsite, draftAuthorsRemote, draftAuthorsUnknown, draftAuthorsTotal) ;
 } // onLoad()
 
 </script>
@@ -357,7 +359,7 @@ function onLoad() {
 <p>If you want to know more on how IETF technologies are used worldwide for "COVID-19 certificates", here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/>
 <em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>, itself based on <a href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE COVID-19 Data</a>.
 The power of open data!</em><br/>
-<small>Code is open source and store on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
+<small>Code is open source and stored on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
 <!-- Matomo Image Tracker and warning about JS requirement -->
 <noscript><img referrerpolicy="no-referrer-when-downgrade" src="https://analytics.vyncke.org/matomo.php?idsite=6&amp;rec=1" style="border:0" alt="" />
 <b>This site requires javascript.</b></noscript>

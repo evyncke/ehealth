@@ -14,7 +14,7 @@
 #     limitations under the License.
 #
 # HTTP/2 push of CSS via header()
-header('Link: </ietf/participants.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script') ;
+header('Link: </ietf/participants.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/meetings.js>;rel=preload;as=script') ;
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -28,6 +28,7 @@ header('Link: </ietf/participants.js>;rel=preload;as=script,</ietf/wg.js>;rel=pr
 	<script type="text/javascript" src="participants.js"></script>
 	<script type="text/javascript" src="wg.js"></script>
 	<script type="text/javascript" src="wgchairs.js"></script>
+	<script type="text/javascript" src="meetings.js"></script>
 	<script type="text/javascript" src="utils.js"></script>
 <?php
 $ip = $_SERVER['REMOTE_ADDR'];
@@ -36,6 +37,7 @@ $queryWG = (isset($_REQUEST['wg'])) ? $_REQUEST['wg'] : '' ;
 ?>
 <script type="text/javascript">
 
+var lastMeeting = meetings['last']['number'] ;
 var queryWG = '<?=$queryWG?>' ;
 //
 function onLoad() {
@@ -154,7 +156,7 @@ function onChange(elem) {
 		document.getElementById('resultText').insertAdjacentHTML('beforeend', '<p style="color: red;">Alas, no blue sheets are available for the previous WG meeting...</p>') ;
 		return ;
 	}
-	var uri = "https://www.ietf.org/proceedings/112/bluesheets/" + bluesheetsFilename ;
+	var uri = "https://www.ietf.org/proceedings/" + lastMeeting + "/bluesheets/" + bluesheetsFilename ;
 	document.getElementById('resultText').insertAdjacentHTML('beforeend', '<p><em>Fetching <a href="' + uri + '">blue sheets</a> of the latest WG meeting.</em></p>') ;
 	var response = fetch(uri) // fetch() returns a 'Promise' object
 	        // Could use .catch(error =>) to handle errors

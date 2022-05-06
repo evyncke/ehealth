@@ -35,7 +35,7 @@ fjs.write("var participantsOnsite = [")
 rows = root.iter('tr')
 next(rows) # Skip the header
 for row in rows:
-        fsj.write('["{}", "{}", "{}", "{}"],'.format(row[0].text, row[1].text, row[2].text, row[3].text))
+        fjs.write('["{}", "{}", "{}", "{}"],'.format(row[0].text, row[1].text, row[2].text, row[3].text))
         participants.append([row[0].text, row[1].text, row[2].text, row[3].text])
         country = row[3].text
         if country in countries:
@@ -45,7 +45,7 @@ for row in rows:
 fjs.write("] ;\n")
 
 fjs.write("var countries = ")
-json.dump(countries, fjs)
+json.dump(countries, fjs, ensure_ascii = False, indent = 2)
 fjs.write(";\n")
 
 with open('onsite.json', 'w', encoding = 'utf-8') as f:

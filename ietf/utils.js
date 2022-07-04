@@ -25,7 +25,10 @@ var shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick',
         ['Geoffrey', 'Geoff'], ['Balázs', 'Balazs'], ['János', 'Janos'], ['Éric', 'Eric'],
         ['Alexandre', 'Alex'], ['Alexander', 'Alex'],['Gregory', 'Greg'],['Gregory', 'Greg'],
         ['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],
-        ['Thomas', 'Tom'], ['David', 'Dave'], ['Bernard', 'Bernie'], ['Peter', 'Pete'], ['Donald', 'Don']]) ;
+        ['Thomas', 'Tom'], ['Tommy', 'Tom'],
+	['David', 'Dave'], ['Bernard', 'Bernie'], ['Peter', 'Pete'], ['Donald', 'Don'],
+	['Shu-Fang', 'Shufang']
+]) ;
 //
 // Find a participants based on "first last" in the participants table containing lastname firstname
 function findParticipant(fullName, table) {

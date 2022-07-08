@@ -26,6 +26,7 @@ var shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick',
         ['Alexandre', 'Alex'], ['Alexander', 'Alex'],['Gregory', 'Greg'],['Gregory', 'Greg'],
         ['Christopher', 'Chris'], ['Christophe', 'Chris'], ['Samuel', 'Sam'], ['Richard', 'Dick'],
         ['Thomas', 'Tom'], ['Tommy', 'Tom'],
+	['Jonathan', 'Jon'],
 	['David', 'Dave'], ['Bernard', 'Bernie'], ['Peter', 'Pete'], ['Donald', 'Don'],
 	['Shu-Fang', 'Shufang']
 ]) ;
@@ -35,7 +36,7 @@ function findParticipant(fullName, table) {
         if (! fullName) return false ;
         // Exceptions
         if (fullName == 'Ines Robles') fullName = 'Maria Ines Robles' ;
-        if (fullName == 'Spencer Dawkins') fullName = 'Paul Spencer Dawkins' ;
+//        if (fullName == 'Spencer Dawkins') fullName = 'Paul Spencer Dawkins' ;
         if (fullName == 'Jose Ignacio Alvarez-Hamelin') fullName = 'J. Ignacio Alvarez-Hamelin' ;
 	if (fullName == 'Juan-Carlos Zúñiga') fullName = 'Juan Carlos Zuniga' ;
 	if (fullName == 'Mališa Vučinić') fullName = 'Malisa Vucinic' ;
@@ -63,10 +64,11 @@ function fuzzyMatch(fullName) {
 	var nameDisplayed = false ;
 
         if (! fullName) return ;
-//      var table = participantsOnsite ;
-        var table = participantsRemote ;
+      var table = participantsOnsite ;
+//        var table = participantsRemote ;
         var tokens = fullName.split(' ') ;
         var lastName = tokens[tokens.length-1].toUpperCase() ;
+	if (lastName.length <= 3) return ;
         for (let i = 0; i < table.length ; i++) {
                 if (lastName == table[i][0].toUpperCase()) {
 			if (! nameDisplayed) {

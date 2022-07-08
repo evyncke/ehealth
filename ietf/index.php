@@ -121,8 +121,8 @@ function drawChart() {
 		text.innerHTML = '<p>No registration yet.</p>' ;
 		return ;
 	}
-	text.innerHTML = "<p>There are " + participantsCount + " in person participants. 7-day-smoothed new cases per million:<ul>" +
-		"<li>weighted on all participants: " + Math.round(weightedNewCases) + "</li>" +
+	text.innerHTML = "<p>There are " + participantsCount + " in person and " + participantsRemote.length + " remote participants. 7-day-smoothed new cases per million:<ul>" +
+		"<li>weighted on all in person participants: " + Math.round(weightedNewCases) + "</li>" +
 		"<li>country with minimum new cases: " + minCountry + " (" + covid_data[minCountry].location + ") with " + minNewcases + "</li>" +
 		"<li>country with maximum new cases: " + maxCountry + " (" + covid_data[maxCountry].location + ") with " + Math.round(maxNewcases) + "</li>" +
 		"<li>your country (based on your IP address): " + myCountry + " (" + covid_data[myCountry].location + ") with  " + Math.round(covid_data[myCountry].new_cases_smoothed_per_million) + "</li>" +

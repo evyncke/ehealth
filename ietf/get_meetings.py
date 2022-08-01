@@ -18,10 +18,12 @@ from lxml import etree
 from urllib import request
 import json
 from datetime import date
+from dateutil.relativedelta import relativedelta
 import re
 
 meetings = {}
 today = date.today()
+previousMonth = today - relativedelta(months=1)
 
 def buildMeetingObject(meetingElem):
     meetingObject = {}
@@ -34,7 +36,7 @@ def buildMeetingObject(meetingElem):
     return meetingObject 
 
 # Read previous meeting
-url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1&format=xml&date__lte=" + str(today)
+url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1&format=xml&date__lte=" + str(previousMonth)
 
 tree = etree.parse(request.urlopen(url))
 root = tree.getroot()
@@ -43,7 +45,7 @@ objects = root.find('objects')
 meetings['last'] = buildMeetingObject(objects[0])
 
 # Read future meetings
-url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=20&format=xml&date__gte=" + str(today)
+url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=20&format=xml&date__gte=" + str(previousMonth)
 tree = etree.parse(request.urlopen(url))
 root = tree.getroot()
 objects = root.find('objects')

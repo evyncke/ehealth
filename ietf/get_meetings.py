@@ -24,6 +24,7 @@ import re
 meetings = {}
 today = date.today()
 previousMonth = today - relativedelta(months=1)
+previousMonth = today - relativedelta(days=20)
 
 def buildMeetingObject(meetingElem):
     meetingObject = {}

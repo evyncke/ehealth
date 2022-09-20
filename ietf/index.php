@@ -14,7 +14,7 @@
 #     limitations under the License.
 #
 # HTTP/2 push of CSS via header()
-header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script,</ietf/meetings.js>;rel=preload;as=script') ;
+header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants2.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script,</ietf/meetings.js>;rel=preload;as=script') ;
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -27,7 +27,7 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants.
 <!-- Some utilities -->
 	<script type="text/javascript" src="utils.js"></script>
 <!--- get all IETF participants onsite + per country statistics + date of collection -->
-	<script type="text/javascript" src="participants.js"></script>
+	<script type="text/javascript" src="participants2.js"></script>
 	<script type="text/javascript" src="leaders.js"></script>
 	<script type="text/javascript" src="wgchairs.js"></script>
 	<script type="text/javascript" src="wg.js"></script>
@@ -139,11 +139,11 @@ function drawChart() {
 }
 
 function displayCategory(elemId, name, onsite, remote, unknown, total) {
-	leaders = document.getElementById(elemId) ;
+	var leaders = document.getElementById(elemId) ;
 	leaders.innerHTML = '<p>Out of the ' + total + ' ' + name + ', there are:</p><ul>' +
 		'<li>' + onsite + ' on site;</li>' +
 		'<li>' + remote + ' remote;</li>' +
-		'<li>' + unknown + ' not registered yet (or <abbr title="no correlation was possible between registration and datatracker data (different writing of the first & last names)">not found</abbr>).</li>' +
+		'<li>' + unknown + ' not registered yet.</li>' +
 		'</ul>' ;
 	document.getElementById(elemId + 'Onsite').style.width = Math.round(100.0*onsite/total) + "%" ;
 	document.getElementById(elemId + 'Onsite').innerHTML = Math.round(100.0*onsite/total) + "%" ;
@@ -151,6 +151,19 @@ function displayCategory(elemId, name, onsite, remote, unknown, total) {
 	document.getElementById(elemId + 'Remote').innerHTML = Math.round(100.0*remote/total) + "%" ;
 }
 //
+// Find a participants based on the datatracker ID
+function findParticipant(id, table) {
+        if (table[id]) return true ;
+        return false ;
+}
+
+// Find a participants based on the email
+function findParticipantByEmail(email, table) {
+	for (id in table)
+		if (table[id].email == email)
+			return true ;
+	return false ;
+}
 
 function onLoad() {
 	// Get the next/current IETF meeting
@@ -161,22 +174,17 @@ function onLoad() {
 	leadersUnknown = 0 ;
 	leadersTotal = 0 ;
 	for (let id in leaders) {
-		leader = leaders[id] ;
-		if (findParticipant(leader.name, participantsOnsite))
+		if (findParticipant(id, participantsOnsite))
 			leadersOnsite++ ;
-		else if (findParticipant(leader.ascii, participantsOnsite))
-			leadersOnsite++ ;
-		else if (findParticipant(leader.name, participantsRemote))
-			leadersRemote++ ;
-		else if (findParticipant(leader.ascii, participantsRemote))
+		else if (findParticipant(id, participantsRemote))
 			leadersRemote++ ;
 		else {
-			leadersUnknown++ ;
-			fuzzyMatch(leader.name) ;
+			leadersUnknown ++ ;
+			console.log(leaders[id].name + ' unknown status') ;
 		}
 		leadersTotal ++ ;
 	}
-	displayCategory('leaders', 'IESG/IAB members', leadersOnsite, leadersRemote, leadersUnknown, leadersTotal) ;
+	displayCategory('leadersId', 'IESG/IAB members', leadersOnsite, leadersRemote, leadersUnknown, leadersTotal) ;
 
 	// get the list of all WG
 	wgChairsOnsiteList = []
@@ -193,38 +201,22 @@ function onLoad() {
 	wgChairsTotal = 0 ;
 	for (let id in wgChairs) {
 		leader = wgChairs[id] ;
-		if (findParticipant(leader.name, participantsOnsite)) {
+		if (findParticipant(id, participantsOnsite)) {
 			wgChairsOnsite++ ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
 				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsOnsiteList[wgName]++ ;
 			}
-		} else if (findParticipant(leader.ascii, participantsOnsite)){
-			wgChairsOnsite++ ;
-			for (let role in leader['role']) {
-				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
-				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
-				wgChairsOnsiteList[wgName]++ ;
-			}
-		} else if (findParticipant(leader.name, participantsRemote)){
+		} else if (findParticipant(id, participantsRemote)){
 			wgChairsRemote++ ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
 				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsRemoteList[wgName]++ ;
 			}
-		} else if (findParticipant(leader.ascii, participantsRemote)){
-			wgChairsRemote++ ;
-			for (let role in leader['role']) {
-				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
-				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
-				wgChairsRemoteList[wgName]++ ;
-			}
-		} else {
-			fuzzyMatch(leader.name) ;
-			wgChairsUnknown++ ;
-		}
+		} else
+			wgChairsUnknown ++ ;
 		wgChairsTotal ++ ;
 	}
 	displayCategory('wg_chairs', 'WG/BoF chairs or delegates', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal) ;
@@ -251,15 +243,12 @@ function onLoad() {
 	draftAuthorsUnknown = 0 ;
 	draftAuthorsTotal = 0 ;
 	for (let id in draftAuthors) {
-		author = draftAuthors[id] ;
-		if (findParticipant(author.name, participantsOnsite))
+		if (findParticipantByEmail(id, participantsOnsite))
 			draftAuthorsOnsite++ ;
-		else if (findParticipant(author.name, participantsRemote))
+		else if (findParticipantByEmail(id, participantsRemote))
 			draftAuthorsRemote++ ;
-		else {
-//			fuzzyMatch(author.name) ;
+		else
 			draftAuthorsUnknown++ ;
-		}
 		draftAuthorsTotal ++ ;
 	}
 	displayCategory('draft_authors', 'documents authors in the last 4 months', draftAuthorsOnsite, draftAuthorsRemote, draftAuthorsUnknown, draftAuthorsTotal) ;
@@ -301,10 +290,10 @@ function onLoad() {
 
 <div class="col-sm-12 col-lg-6 col-xxl-4">
 <h2>I* Participation</h2>
-<div id="leaders">Please wait while consolidating the data...</div>
-<div id="leadersProgressBar" class="progress" style="height: 20px;">
-	<div id="leadersOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
-	<div id="leadersRemote" class="progress-bar" style="width: 0%; background-color: orange;"></div>
+<div id="leadersId">Please wait while consolidating the data...</div>
+<div id="leadersIdProgressBar" class="progress" style="height: 20px;">
+	<div id="leadersIdOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
+	<div id="leadersIdRemote" class="progress-bar" style="width: 0%; background-color: orange;"></div>
 </div> <!-- leadersProgressBar -->
 
 <hr>

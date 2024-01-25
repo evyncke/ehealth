@@ -24,7 +24,7 @@ import re
 meetings = {}
 today = date.today()
 previousMonth = today - relativedelta(months=1)
-previousMonth = today - relativedelta(days=20)
+previousMonth = today - relativedelta(days=10)
 
 def buildMeetingObject(meetingElem):
     meetingObject = {}
@@ -37,7 +37,7 @@ def buildMeetingObject(meetingElem):
     return meetingObject 
 
 # Read previous meeting
-url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1&format=xml&date__lte=" + str(previousMonth)
+url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1&format=xml&date__lte=" + str(previousMonth) + "&order_by=-id"
 
 tree = etree.parse(request.urlopen(url))
 root = tree.getroot()
@@ -46,12 +46,12 @@ objects = root.find('objects')
 meetings['last'] = buildMeetingObject(objects[0])
 
 # Read future meetings
-url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=20&format=xml&date__gte=" + str(previousMonth)
+url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=1&format=xml&date__gte=" + str(previousMonth) + "&order_by=id"
 tree = etree.parse(request.urlopen(url))
 root = tree.getroot()
 objects = root.find('objects')
 if len(objects) >= 1:
-    meetings['next'] = buildMeetingObject(objects[-1])
+    meetings['next'] = buildMeetingObject(objects[0])
 else:
     meeting['next'] = meetings['last']
 

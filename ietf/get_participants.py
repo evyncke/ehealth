@@ -15,9 +15,10 @@
 #    limitations under the License.
 
 from lxml import etree, html
-from urllib import request
+from urllib import request, error
 import json
 import datetime 
+import sys
 
 # Load the information about next/current and last meetings
 meetings = json.load(open('meetings.json'))
@@ -28,12 +29,16 @@ url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/ons
 countries = {}
 participants = []
 
-fjs = open('participants.js', 'w', encoding = 'utf-8')
+try:
+    root = html.parse(request.urlopen(url))
+    rows = root.iter('tr')
+    next(rows) # Skip the header
+except error.HTTPError:
+    # Usually because the meeting registration is not yet open
+    rows = []
 
-root = html.parse(request.urlopen(url))
+fjs = open('participants.js', 'w', encoding = 'utf-8')
 fjs.write("var participantsOnsite = [")
-rows = root.iter('tr')
-next(rows) # Skip the header
 for row in rows:
         fjs.write('["{}", "{}", "{}", "{}"],'.format(row[0].text, row[1].text, row[2].text, row[3].text))
         participants.append([row[0].text, row[1].text, row[2].text, row[3].text])
@@ -55,10 +60,14 @@ with open('onsite.json', 'w', encoding = 'utf-8') as f:
 url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/remote/"
 
 participants = []
-root = html.parse(request.urlopen(url))
+try:
+    root = html.parse(request.urlopen(url))
+    rows = root.iter('tr')
+    next(rows) # Skip the header
+except error.HTTPError:
+    rows = []
+
 fjs.write("var participantsRemote = [")
-rows = root.iter('tr')
-next(rows) # Skip the header
 for row in rows:
         fjs.write('["{}", "{}", "{}", "{}"],\n'.format(row[0].text, row[1].text, row[2].text, row[3].text))
         participants.append([row[0].text, row[1].text, row[2].text, row[3].text])

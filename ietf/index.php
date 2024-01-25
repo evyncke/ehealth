@@ -37,7 +37,7 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants2
 <!--- Google charts -->
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <?php
-require_once('/var/www/vendor/autoload.php') ;
+require_once('vendor/autoload.php') ;
 use GeoIp2\Database\Reader;
 $reader = new Reader('/var/www/matomo/misc/DBIP-City.mmdb') ;
 $ip = $_SERVER['REMOTE_ADDR'];
@@ -88,7 +88,10 @@ function drawChart() {
 		isoCode = countryISOMapping[country] ;
 		if (participants >= 5)
 			largeCountries.push(isoCode) ;
-		newCases = covid_data[isoCode].new_cases_smoothed_per_million ;
+		if (isoCode in covid_data)
+			newCases = covid_data[isoCode].new_cases_smoothed_per_million ;
+		else
+			newCases = 0.0 ;
 		weightedNewCases += participants * newCases ;
 		if (newCases < minNewcases) {
 			minNewcases = newCases;
@@ -98,7 +101,10 @@ function drawChart() {
 			maxNewcases = newCases;
 			maxCountry = isoCode ;
 		}
-		data.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' participants, new cases: ' + newCases + '/million']) ;
+		if (isoCode in covid_data)
+			data.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' participants, new cases: ' + newCases + '/million']) ;
+		else
+			console.log("No data for isoCode = ", isoCode) ;
 	}
 	// Sort the data based on the onsite participants
 	data.sort({column: 1, desc: true}) ;
@@ -180,7 +186,6 @@ function onLoad() {
 			leadersRemote++ ;
 		else {
 			leadersUnknown ++ ;
-			console.log(leaders[id].name + ' unknown status') ;
 		}
 		leadersTotal ++ ;
 	}
@@ -301,35 +306,60 @@ function onLoad() {
 <h2>Working Groups/BoF Chairs Participation</h2>
 <div id="wg_chairs">Please wait while consolidating the data...</div>
 
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#onsite_chairs">WG/BoF with at least one chair or delegate on site</button>
-<div id="onsite_chairs" class="collapse">
-	<div class="card card-body">
-		<span id="onsite_chairs_text"></span>
-	</div> <!-- card -->
-</div> <!-- collapse -->
-<br>
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs">WG/BoF with at least one chair or delegate remote but none on site</button>
-<div id="remote_chairs" class="collapse">
-	<div class="card card-body">
-		<span id="remote_chairs_text"></span>
-	</div> <!-- card -->
-</div> <!-- collapse -->
-<br>
-<button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#no_chairs">WG/BoF with no registered chairs / delegates</button>
-<div id="no_chairs" class="collapse">
-	<div class="card card-body">
-		<span id="no_chairs_text"></span>
-	</div> <!-- card -->
-</div> <!-- collapse -->
-
-<br>
-<a href="wg.php">More information per working group.</a>
-<br>
-
 <div id="wg_chairsProgressBar" class="progress" style="height: 20px;">
 	<div id="wg_chairsOnsite" class="progress-bar" style="width: 0%; background-color: green;"></div>
 	<div id="wg_chairsRemote" class="progress-bar" style="width: 0%; background-color: orange;"></div>
 </div> <!-- wg_chairsProgressBar -->
+
+<p>Data about WG/BoF and their chairs/delegates:</p>
+<div class="accordion" id="accordionWG">
+<div class="accordion-item">
+	<h2 class="accordion-header">
+		<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#onsite_chairs" aria-expanded="false" aria-controls="onsite_chairs">
+			WG/BoF with at least one chair or delegate on site
+		</button>
+	</h2>
+	<div id="onsite_chairs" class="accordion-collapse collapse" data-bs-parent="#accordionWG">
+		<div class="accordion-body">
+			<span id="onsite_chairs_text"></span>
+			<p>WG/BoF in italics are currently not planning to meet. Click on other WG/BoF names to have more specific attendance data.</p>
+		</div> <!-- accordion-body -->
+	</div> <!-- collapse -->
+</div><!-- accordion-item-->
+
+<div class="accordion-item">
+	<h2 class="accordion-header">
+		<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#remote_chairs" aria-expanded="false" aria-controls="remote_chairs">
+			WG/BoF with at least one chair or delegate remote but none on site
+		</button>
+	</h2>
+	<div id="remote_chairs" class="accordion-collapse collapse" data-bs-parent="#accordionWG">
+		<div class="accordion-body">
+			<span id="remote_chairs_text"></span>
+			<p>WG/BoF in italics are currently not planning to meet. Click on other WG/BoF names to have more specific attendance data.</p>
+		</div> <!-- accordion-body -->
+	</div> <!-- collapse -->
+</div><!-- accordion-item-->
+
+<div class="accordion-item">
+	<h2 class="accordion-header">
+		<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#no_chairs" aria-expanded="false" aria-controls="no_chairs">
+			WG/BoF with no registered chairs / delegates
+		</button>
+	</h2>
+	<div id="no_chairs" class="accordion-collapse collapse" data-bs-parent="#accordionWG">
+		<div class="accordion-body">
+			<span id="no_chairs_text"></span>
+			<p>WG/BoF in italics are currently not planning to meet. Click on other WG/BoF names to have more specific attendance data.</p>
+		</div> <!-- accordion-body -->
+	</div> <!-- collapse -->
+</div><!-- accordion-item-->
+
+</div><!-- accordion -->
+
+<br>
+Get <a href="wg.php">more information per working group.</a>
+<br>
 
 <hr>
 
@@ -345,7 +375,7 @@ function onLoad() {
 </div> <!-- row -->
 <hr>
 <?=$ipv4only_message?>
-<p>If you want to know more on how IETF technologies are used worldwide for "COVID-19 certificates", here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/>
+<p>If you want to know more on how IETF technologies were used worldwide for "COVID-19 certificates", here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/>
 <em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>, itself based on <a href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE COVID-19 Data</a>.
 The power of open data!</em><br/>
 <small>Code is open source and stored on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>

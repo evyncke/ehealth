@@ -59,6 +59,7 @@ def getMeetingParticipants(meetingNumber):
           firstName = object.find('first_name').text
           lastName = object.find('last_name').text
           email = object.find('email').text
+          affiliation = object.find('affiliation').text
           person = object.find('person').text
           countryCode = object.find('country_code').text
           if countryCode == 'BE':
@@ -73,7 +74,7 @@ def getMeetingParticipants(meetingNumber):
               else:
                   countries[countryCode] = 1
 
-          participant = { 'first_name': firstName, 'last_name': lastName, 'country_code': countryCode, 'email' : email, 'id': id}
+          participant = { 'first_name': firstName, 'last_name': lastName, 'country_code': countryCode, 'email' : email, 'affiliation' : affiliation, 'id': id}
           if registrationType.text.startswith('onsite') or  registrationType.text.endswith(' onsite'):
               participantsOnsite[id] = participant
           elif registrationType.text.startswith('remote') or registrationType.text.endswith(' remote'):
@@ -106,5 +107,5 @@ def getMeetingParticipants(meetingNumber):
 # Load the information about next/current and last meetings
 meetings = json.load(open('meetings.json'))
 
-for i in range(100, 110):
+for i in range(109, 120):
   getMeetingParticipants(i)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#Copyright 2022 Eric Vyncke evyncke@cisco.com
+#Copyright 2022-2024 Eric Vyncke evyncke@cisco.com
 
 #Licensed under the Apache License, Version 2.0 (the "License");
 #you may not use this file except in compliance with the License.
@@ -54,6 +54,19 @@ if len(objects) >= 1:
     meetings['next'] = buildMeetingObject(objects[0])
 else:
     meeting['next'] = meetings['last']
+
+# Read previous SIXTEEN meetingS
+url = "https://datatracker.ietf.org/api/v1/meeting/meeting/?type=ietf&offset=0&limit=16&format=xml&date__lte=" + str(previousMonth) + "&order_by=-id"
+
+tree = etree.parse(request.urlopen(url))
+root = tree.getroot()
+objects = root.find('objects')
+
+for i in range(len(objects)):
+    meetingNumber = objects[i].find('number').text
+    meetings[meetingNumber] = buildMeetingObject(objects[i])
+
+# Read future meetings
 
 with open('meetings.json', 'w', encoding = 'utf-8') as f:
     json.dump(meetings, f, ensure_ascii = False, indent = 2)

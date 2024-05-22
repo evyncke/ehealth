@@ -1,5 +1,5 @@
 <?php
-# Copyright 2022 Eric Vyncke, evyncke@cisco.com
+# Copyright 2022-24 Eric Vyncke, evyncke@cisco.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,14 +26,8 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants2
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <!-- Some utilities -->
 	<script type="text/javascript" src="utils.js"></script>
-<!--- get all IETF participants onsite + per country statistics + date of collection -->
-	<script type="text/javascript" src="participants2.js"></script>
-	<script type="text/javascript" src="leaders.js"></script>
-	<script type="text/javascript" src="wgchairs.js"></script>
-	<script type="text/javascript" src="wg.js"></script>
-	<script type="text/javascript" src="draftauthors.js"></script>
-	<script type="text/javascript" src="meetings.js"></script>
 	<script type="text/javascript" src="isoCountry.js"></script>
+	<script type="text/javascript" src="meetings.js"></script>
 <!--- Google charts -->
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <?php
@@ -44,12 +38,44 @@ $ip = $_SERVER['REMOTE_ADDR'];
 $ipv4only_message = (strpos($ip, ':') === false) ? '<p><mark>Humm you are interested in IETF work but only use the legacy IPv4 protocol?</mark></p>' : '' ;
 $mycountry = $reader->city($ip) ;
 $mycountry = $mycountry->country->isoCode ;
+$ietfNumber = (isset($_REQUEST['ietf']) and is_numeric($_REQUEST['ietf'])) ? trim($_REQUEST['ietf']) : NULL ;
+if ($ietfNumber) {
+?>
+<!--- get all IETF participants onsite + per country statistics + date of collection -->
+	<script type="text/javascript" src="data/participants_<?=$ietfNumber?>.js"></script>
+	<script type="text/javascript" src="data/leaders_<?=$ietfNumber?>.js"></script>
+	<script type="text/javascript" src="data/wgchairs_<?=$ietfNumber?>.js"></script>
+	<script type="text/javascript" src="data/wg_<?=$ietfNumber?>.js"></script>
+	<script type="text/javascript" src="data/draftauthors_<?=$ietfNumber?>.js"></script>
+<?php
+} else {
+?>
+<!--- get all IETF participants onsite + per country statistics + date of collection -->
+	<script type="text/javascript" src="participants2.js"></script>
+	<script type="text/javascript" src="leaders.js"></script>
+	<script type="text/javascript" src="wgchairs.js"></script>
+	<script type="text/javascript" src="wg.js"></script>
+	<script type="text/javascript" src="draftauthors.js"></script>
+<?php
+} 
 ?>
 <script type="text/javascript">
 myCountry = countryISOMapping['<?=$mycountry?>'] ;
-ietfCountry = countryISOMapping[meetings['next']['country2']] ;
+<?php
+if ($ietfNumber) {
+?>
+ietfNumber = <?=$ietfNumber?> ;
+ietfCity = meetings[ietfNumber]['city'] ;
+ietfCountry = countryISOMapping[meetings[ietfNumber]['country2']] ;
+<?php
+} else {
+?>
 ietfNumber = meetings['next']['number'] ;
 ietfCity = meetings['next']['city'] ;
+ietfCountry = countryISOMapping[meetings['next']['country2']] ;
+<?php
+}
+?>
 document.title = 'IETF-' + ietfNumber + ' Participants and COVID-19' ;
 covid_data = '' ;
 

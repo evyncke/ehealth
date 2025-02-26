@@ -173,9 +173,9 @@ def importData(group):
 #importData('person/historicalperson')
 #importData('group/groupevent')
 #importData('person/person')
-importData('submit/submission')
-importData('nomcom/volunteer')
-importData('nomcom/nomcom')
+#importData('submit/submission') # Beware this contains more than 100.000 entries.... not to be reimported dumbly...
+#importData('nomcom/volunteer')
+#importData('nomcom/nomcom')
 
 mycursor.close()
 mydb.close()

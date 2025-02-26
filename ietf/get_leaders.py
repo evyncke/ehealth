@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#Copyright 2022 Eric Vyncke evyncke@cisco.com
+#Copyright 2022-2025 Eric Vyncke evyncke@cisco.com
 
 #Licensed under the Apache License, Version 2.0 (the "License");
 #you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ def getPerson(uri, email = None, role = None):
     # uri looks like api/v1/person/person/111656/
     id = int(re.search(r"api/v1/person/person/(.+)/$", uri).group(1))
     if id in cachedPersons:
-        print("Reusing cache")
+        print("Reusing cache for persons")
         if email:
             cachedPersons[id]['email'] = email
         return cachedPersons[id]
@@ -47,7 +47,19 @@ def getPerson(uri, email = None, role = None):
 
 def getGroupFromName(name):
     if not name in cachedGroups:
-        print("Unknown name: {}".format(name))
+        print("Unknown name: {}, fetching it".format(name))
+        url = "https://datatracker.ietf.org/api/v1/group/group/?format=xml&acronym=" + name 
+
+        tree = etree.parse(request.urlopen(url))
+        root = tree.getroot()
+        objects = root.find('objects')
+        for object in objects:
+            state = object.find('state') 
+            if not state.text == '/api/v1/name/groupstatename/active/':
+                continue
+            acronym = object.find('acronym') 
+            cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text}
+            print("Added {} as id={}".format(acronym.text, object.find('id').text))
     return cachedGroups[name]
 
 
@@ -67,17 +79,21 @@ def getMembers(groupName, roleName):
 
 
 # Read all groups
-url = "https://datatracker.ietf.org/api/v1/group/group/?format=xml&limit=1000&offset=0"
+if False:
+  url = "https://datatracker.ietf.org/api/v1/group/group/?format=xml&limit=1000&offset=0"
 
-tree = etree.parse(request.urlopen(url))
-root = tree.getroot()
-objects = root.find('objects')
-for object in objects:
-    state = object.find('state') 
-    if not state.text == '/api/v1/name/groupstatename/active/':
-        continue
-    acronym = object.find('acronym') 
-    cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text}
+  tree = etree.parse(request.urlopen(url))
+  root = tree.getroot()
+  objects = root.find('objects')
+  for object in objects:
+      state = object.find('state') 
+      if not state.text == '/api/v1/name/groupstatename/active/':
+          continue
+      acronym = object.find('acronym') 
+      cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text}
+
+# Or smarter with a per group search ?
+# https://datatracker.ietf.org/api/v1/group/group/?acronym=iesg
 
 # Find all IESG members
 getMembers('ietf', 'chair')

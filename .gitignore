@@ -1,0 +1,11 @@
+evyncke.*
+*.log
+*.lock
+*.js
+*.json
+encode.sh
+decode.sh
+process_*.sh
+ietf/data/
+__pycache__/
+bluesheets/

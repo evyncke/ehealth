@@ -93,10 +93,10 @@ getMembers('iab', 'member')
 #getMembers('irtf', 'chair')
 #getMembers('irsg', 'member')
 
-with open('data/leaders_120.json', 'w', encoding = 'utf-8') as f:
+with open('data/leaders_124.json', 'w', encoding = 'utf-8') as f:
     json.dump(cachedPersons, f, ensure_ascii = False, indent = 2)
 
-with open('data/leaders_120.js', 'w', encoding = 'utf-8') as f:
+with open('data/leaders_124.js', 'w', encoding = 'utf-8') as f:
     f.write("var leaders = ")
     json.dump(cachedPersons, f, ensure_ascii = False, indent = 2)
     f.write(";\n")

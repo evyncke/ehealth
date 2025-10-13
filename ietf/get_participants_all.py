@@ -107,5 +107,5 @@ def getMeetingParticipants(meetingNumber):
 # Load the information about next/current and last meetings
 meetings = json.load(open('meetings.json'))
 
-for i in range(109, 120):
+for i in range(122, 125):
   getMeetingParticipants(i)

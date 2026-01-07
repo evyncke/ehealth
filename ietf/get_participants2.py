@@ -45,6 +45,7 @@ participantsRemote = {}
 # Can be filtered with reg_type=onsite ou remote
 nextUri= "/api/v1/stats/meetingregistration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber) + "&reg_type=onsite"
 nextUri= "/api/v1/stats/meetingregistration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber)
+nextUri= "/api/v1/meeting/registration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber)
 
 while (nextUri):
     url = "https://datatracker.ietf.org" + nextUri

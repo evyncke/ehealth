@@ -1,5 +1,5 @@
 <?php
-# Copyright 2022 Eric Vyncke, evyncke@cisco.com
+# Copyright 2022-2026 Eric Vyncke, evyncke@cisco.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ function analyseLine(value, index) {
 	if (value == '') return ; // Somes times empty lines...
 	var name = value.split("\t")[0] ;
 	participantsCount ++ ;
-	if (findParticipant(name, participantsOnsite)) {
+	if (findParticipantByName(name, participantsOnsite)) {
 		console.log(name, " is on site") ;
 		participantsOnSiteCount++ ;
 	} else if (findParticipant(name, participantsRemote)) {
@@ -118,9 +118,9 @@ function checkWGLeaders(wgName, elem) {
 			if (wgRole[0] != wgName)
 				continue ;
 			msg += '<li>' + wgChairs[p].name + ' (' + wgRole[1] + '): ' ;
-			if (findParticipant(wgChairs[p].name, participantsOnsite) || findParticipant(wgChairs[p].ascii_name, participantsOnsite))
+			if (findParticipantByName(wgChairs[p].name, participantsOnsite) || findParticipantByName(wgChairs[p].ascii_name, participantsOnsite))
 				msg += 'onsite;' ;
-			else if (findParticipant(wgChairs[p].name, participantsRemote) || findParticipant(wgChairs[p].ascii_name, participantsRemote))
+			else if (findParticipantByName(wgChairs[p].name, participantsRemote) || findParticipantByName(wgChairs[p].ascii_name, participantsRemote))
 				msg += 'remote;' ;
 			else
 				msg += 'not found on registration;' ;

@@ -32,15 +32,17 @@ var shortNames = new Map([['Antoni', 'Tony'], ['Anthony', 'Tony'], ['Frederick',
 ]) ;
 //
 // Find a participants based on "first last" in the participants table containing lastname firstname
-function findParticipant(fullName, table) {
+function findParticipantByName(fullName, table) {
         if (! fullName) return false ;
-        // Exceptions
+        // Exceptions, i.e., maps some well-known names (per I-D, leadership) into registration 'official' name
         if (fullName == 'Ines Robles') fullName = 'Maria Ines Robles' ;
 //        if (fullName == 'Spencer Dawkins') fullName = 'Paul Spencer Dawkins' ;
         if (fullName == 'Jose Ignacio Alvarez-Hamelin') fullName = 'J. Ignacio Alvarez-Hamelin' ;
 	if (fullName == 'Juan-Carlos Zúñiga') fullName = 'Juan Carlos Zuniga' ;
 	if (fullName == 'Mališa Vučinić') fullName = 'Malisa Vucinic' ;
 	if (fullName == 'Carles Gomez') fullName = 'Carles Gomez Montenegro' ;
+        if (fullName == 'Deb Cooley') fullName = 'Dorothy Cooley' ;
+        if (fullName == 'Glenn Deen') fullName = 'Robert Glenn Deen' ;
 	// Let's canonicalise the first name
         var tokens = fullName.normalize().split(' ') ;
         if (shortNames.get(tokens[0])) tokens[0] = shortNames.get(tokens[0]) ;
@@ -48,9 +50,9 @@ function findParticipant(fullName, table) {
         var fullName2 = tokens[0] + ' ' + tokens[tokens.length-1] ;
         fullName = fullName.toUpperCase() ;
         fullName2 = fullName2.toUpperCase() ;
-        for (let i = 0; i < table.length; i++) {
-		firstName = table[i][1].split(' ')[0].normalize() ; // Remove all middle initials
-		lastName = table[i][0].normalize() ;
+        for (const key in table) {
+		firstName = table[key].first_name.split(' ')[0].normalize() ; // Remove all middle initials
+		lastName = table[key].last_name.normalize() ;
                 if (shortNames.get(firstName)) firstName = shortNames.get(firstName) ;
                 var participantName = firstName + ' ' + lastName ;
                 participantName = participantName.toUpperCase() ;

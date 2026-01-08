@@ -1,5 +1,5 @@
 <?php
-# Copyright 2022-24 Eric Vyncke, evyncke@cisco.com
+# Copyright 2022-26 Eric Vyncke, evyncke@cisco.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants2
 	<script type="text/javascript" src="utils.js"></script>
 	<script type="text/javascript" src="isoCountry.js"></script>
 	<script type="text/javascript" src="meetings.js"></script>
+	<script type="text/javascript" src="utils.js"></script>
 <!--- Google charts -->
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <?php
@@ -184,7 +185,7 @@ function displayCategory(elemId, name, onsite, remote, unknown, total) {
 }
 //
 // Find a participants based on the datatracker ID
-function findParticipant(id, table) {
+function findParticipantById(id, table) {
         if (table[id]) return true ;
         return false ;
 }
@@ -206,10 +207,14 @@ function onLoad() {
 	leadersUnknown = 0 ;
 	leadersTotal = 0 ;
 	for (let id in leaders) {
-		if (findParticipant(id, participantsOnsite))
+		if (findParticipantById(id, participantsOnsite))
 			leadersOnsite++ ;
-		else if (findParticipant(id, participantsRemote))
+		else if (findParticipantById(id, participantsRemote))
 			leadersRemote++ ;
+		else if (findParticipantByName(leaders[id].ascii, participantsOnsite))
+			leadersOnsite++ ;
+		else if (findParticipantByName(leaders[id].ascii, participantsRemote))
+			leadersRemote++ ;		
 		else {
 			leadersUnknown ++ ;
 		}
@@ -232,14 +237,28 @@ function onLoad() {
 	wgChairsTotal = 0 ;
 	for (let id in wgChairs) {
 		leader = wgChairs[id] ;
-		if (findParticipant(id, participantsOnsite)) {
+		if (findParticipantById(id, participantsOnsite)) {
 			wgChairsOnsite++ ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
 				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsOnsiteList[wgName]++ ;
 			}
-		} else if (findParticipant(id, participantsRemote)){
+		} else if (findParticipantById(id, participantsRemote)){
+			wgChairsRemote++ ;
+			for (let role in leader['role']) {
+				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
+				wgChairsRemoteList[wgName]++ ;
+			}
+		} else if (findParticipantByName(leader.ascii, participantsOnsite)) {
+			wgChairsOnsite++ ;
+			for (let role in leader['role']) {
+				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
+				wgChairsOnsiteList[wgName]++ ;
+			}
+		} else if (findParticipantByName(leader.ascii, participantsRemote)){
 			wgChairsRemote++ ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
@@ -277,6 +296,10 @@ function onLoad() {
 		if (findParticipantByEmail(id, participantsOnsite))
 			draftAuthorsOnsite++ ;
 		else if (findParticipantByEmail(id, participantsRemote))
+			draftAuthorsRemote++ ;
+		if (findParticipantByName(draftAuthors[id].name, participantsOnsite))
+			draftAuthorsOnsite++ ;
+		else if (findParticipantByName(draftAuthors[id].name, participantsRemote))
 			draftAuthorsRemote++ ;
 		else
 			draftAuthorsUnknown++ ;

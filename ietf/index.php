@@ -171,12 +171,12 @@ function drawChart() {
 	text.innerHTML = draftAuthorsCollectionDate + ' (UTC)' ;
 }
 
-function displayCategory(elemId, name, onsite, remote, unknown, total) {
+function displayCategory(elemId, name, onsite, remote, unknown, total, onsiteNames = null, remoteNames = null, unknownNames = null) {
 	var leaders = document.getElementById(elemId) ;
 	leaders.innerHTML = '<p>Out of the ' + total + ' ' + name + ', there are:</p><ul>' +
-		'<li>' + onsite + ' on site;</li>' +
-		'<li>' + remote + ' remote;</li>' +
-		'<li>' + unknown + ' not registered yet.</li>' +
+		'<li><abbr title="' + onsiteNames + '">' + onsite + ' on site</abbr>;</li>' +
+		'<li><abbr title="' + remoteNames + '">' + remote + ' remote</abbr>;</li>' +
+		'<li><abbr title="' + unknownNames + '">' + unknown + ' not registered yet</abbr>.</li>' +
 		'</ul>' ;
 	document.getElementById(elemId + 'Onsite').style.width = Math.round(100.0*onsite/total) + "%" ;
 	document.getElementById(elemId + 'Onsite').innerHTML = Math.round(100.0*onsite/total) + "%" ;
@@ -203,24 +203,32 @@ function onLoad() {
 	document.getElementById('ietfNumberSpan').innerHTML = '-' + ietfNumber + ' (' + ietfCity + '/' + ietfCountry + ')';
 	// Let's work on the I* leadership presence
 	leadersOnsite = 0 ;
+	leadersOnsiteNames = [] ;
 	leadersRemote = 0 ;
+	leadersRemoteNames = [] ;
 	leadersUnknown = 0 ;
+	leadersUnknownNames = [] ;
 	leadersTotal = 0 ;
 	for (let id in leaders) {
-		if (findParticipantById(id, participantsOnsite))
+		if (findParticipantById(id, participantsOnsite)) {
 			leadersOnsite++ ;
-		else if (findParticipantById(id, participantsRemote))
+			leadersOnsiteNames.push(leaders[id].ascii) ;
+		} else if (findParticipantById(id, participantsRemote)) {
 			leadersRemote++ ;
-		else if (findParticipantByName(leaders[id].ascii, participantsOnsite))
+			leadersRemoteNames.push(leaders[id].ascii) ;
+		} else if (findParticipantByName(leaders[id].ascii, participantsOnsite)) {
 			leadersOnsite++ ;
-		else if (findParticipantByName(leaders[id].ascii, participantsRemote))
+			leadersOnsiteNames.push(leaders[id].ascii) ;
+		} else if (findParticipantByName(leaders[id].ascii, participantsRemote)) {
 			leadersRemote++ ;		
-		else {
+			leadersRemoteNames.push(leaders[id].ascii) ;
+		} else {
 			leadersUnknown ++ ;
+			leadersUnknownNames.push(leaders[id].ascii) ;
 		}
 		leadersTotal ++ ;
 	}
-	displayCategory('leadersId', 'IESG/IAB members', leadersOnsite, leadersRemote, leadersUnknown, leadersTotal) ;
+	displayCategory('leadersId', 'IESG/IAB members', leadersOnsite, leadersRemote, leadersUnknown, leadersTotal, leadersOnsiteNames.join(', '), leadersRemoteNames.join(', '),  leadersUnknownNames.join(', ')) ;
 
 	// get the list of all WG
 	wgChairsOnsiteList = []
@@ -232,13 +240,17 @@ function onLoad() {
 
 	// Let's work on the WG chairs presence
 	wgChairsOnsite = 0 ;
+	wgChairsOnsiteNames = [] ;
 	wgChairsRemote = 0 ;
+	wgChairsRemoteNames = [] ;
 	wgChairsUnknown = 0 ;
+	wgChairsUnknownNames = [] ;
 	wgChairsTotal = 0 ;
 	for (let id in wgChairs) {
 		leader = wgChairs[id] ;
 		if (findParticipantById(id, participantsOnsite)) {
 			wgChairsOnsite++ ;
+			wgChairsOnsiteNames.push(leader.ascii) ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
 				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
@@ -246,6 +258,7 @@ function onLoad() {
 			}
 		} else if (findParticipantById(id, participantsRemote)){
 			wgChairsRemote++ ;
+			wgChairsRemoteNames.push(leader.ascii) ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
 				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
@@ -253,6 +266,7 @@ function onLoad() {
 			}
 		} else if (findParticipantByName(leader.ascii, participantsOnsite)) {
 			wgChairsOnsite++ ;
+			wgChairsOnsiteNames.push(leader.ascii) ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
 				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
@@ -260,16 +274,19 @@ function onLoad() {
 			}
 		} else if (findParticipantByName(leader.ascii, participantsRemote)){
 			wgChairsRemote++ ;
+			wgChairsRemoteNames.push(leader.ascii) ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
 				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsRemoteList[wgName]++ ;
 			}
-		} else
+		} else {
 			wgChairsUnknown ++ ;
+			wgChairsUnknownNames.push(leader.ascii) ;
+		}
 		wgChairsTotal ++ ;
 	}
-	displayCategory('wg_chairs', 'WG/BoF chairs or delegates', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal) ;
+	displayCategory('wg_chairs', 'WG/BoF chairs or delegates', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal, wgChairsOnsiteNames.join(', '), wgChairsRemoteNames.join(', '), wgChairsUnknownNames.join(', ')) ;
 	onSiteWG = [] ;
 	onSiteRemoteWG = [] ;
 	nobodyWG = [] ;

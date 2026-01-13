@@ -91,7 +91,7 @@ function analyseLine(value, index) {
 	if (findParticipantByName(name, participantsOnsite)) {
 		console.log(name, " is on site") ;
 		participantsOnSiteCount++ ;
-	} else if (findParticipant(name, participantsRemote)) {
+	} else if (findParticipantByName(name, participantsRemote)) {
 		participantsRemoteCount++ ;
 	} else {
 		participantsUnknownCount++ ;
@@ -156,9 +156,10 @@ function onChange(elem) {
 		document.getElementById('resultText').insertAdjacentHTML('beforeend', '<p style="color: red;">Alas, no blue sheets are available for the previous WG meeting...</p>') ;
 		return ;
 	}
-	var uri = "https://www.ietf.org/proceedings/" + lastMeeting + "/bluesheets/" + bluesheetsFilename ;
+	var uri = "/proceedings/" + lastMeeting + "/bluesheets/" + bluesheetsFilename ;
+	var proxiedUri = "dt_proxy.php?url=" + encodeURIComponent(uri) ;
 	document.getElementById('resultText').insertAdjacentHTML('beforeend', '<p><em>Fetching <a href="' + uri + '">blue sheets</a> of the latest WG meeting.</em></p>') ;
-	var response = fetch(uri) // fetch() returns a 'Promise' object
+	var response = fetch(proxiedUri) // fetch() returns a 'Promise' object
 	        // Could use .catch(error =>) to handle errors
 		.then(response => response.text()) // now we have a 'Response' object
 		.then(data => {

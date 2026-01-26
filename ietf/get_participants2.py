@@ -32,7 +32,36 @@ meetingNumber = meetings['next']['number']
 # <country_code>NL</country_code>
 # <person>/api/v1/person/person/126667/</person>
 
-# object key should probably be person ID
+# After Jennifer adding ticket types, we have also for https://datatracker.ietf.org/api/v1/meeting/registration/?meeting__number=125&limit=20&offset=0&format=xml
+# <object>
+# <affiliation>ETH Zurich</affiliation>
+# <attended type="boolean">False</attended>
+# <checkedin type="boolean">False</checkedin>
+# <country_code>CH</country_code>
+# <email>linkerfelix@gmail.com</email>
+# <first_name>Felix</first_name>
+# <id type="integer">70833</id>
+# <last_name>Linker</last_name>
+# <meeting>/api/v1/meeting/meeting/4278/</meeting>
+# <person>/api/v1/person/person/136734/</person>
+# <resource_uri>/api/v1/meeting/registration/70833/</resource_uri>
+# <tickets type="list">
+# <object>
+# <attendance_type>/api/v1/name/attendancetypename/onsite/</attendance_type>
+# <id type="integer">77168</id>
+# <registration>/api/v1/meeting/registration/70833/</registration>
+# <resource_uri>/api/v1/meeting/registrationticket/77168/</resource_uri>
+# <ticket_type>/api/v1/name/registrationtickettypename/week_pass/</ticket_type>
+# </object>
+# <object>
+# <attendance_type>/api/v1/name/attendancetypename/hackathon_onsite/</attendance_type>
+# <id type="integer">77169</id>
+# <registration>/api/v1/meeting/registration/70833/</registration>
+# <resource_uri>/api/v1/meeting/registrationticket/77169/</resource_uri>
+# <ticket_type>/api/v1/name/registrationtickettypename/hackathon_combo/</ticket_type>
+# </object>
+# </tickets>
+# </object>
 
 # Currently, lastname, firstname, affiliation, country
 
@@ -43,8 +72,9 @@ participantsRemote = {}
 # Read all participants
 
 # Can be filtered with reg_type=onsite ou remote
-nextUri= "/api/v1/stats/meetingregistration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber) + "&reg_type=onsite"
-nextUri= "/api/v1/stats/meetingregistration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber)
+# nextUri= "/api/v1/stats/meetingregistration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber) + "&reg_type=onsite"
+# nextUri= "/api/v1/stats/meetingregistration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber)
+nextUri= "/api/v1/meeting/registration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber) + '&tickets__attendance_type=onsite'
 nextUri= "/api/v1/meeting/registration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber)
 
 while (nextUri):
@@ -58,34 +88,31 @@ while (nextUri):
     print("Got {} entries".format(totalCount))
     objects = root.find('objects')
     for object in objects:
-        registrationType = object.find('reg_type')
         firstName = object.find('first_name').text
         lastName = object.find('last_name').text
         email = object.find('email').text
         person = object.find('person').text
         countryCode = object.find('country_code').text
-        if countryCode == 'BE':
-            print('Belgium guy found', registrationType.text, firstName, lastName, email, person)
-        print(registrationType.text, firstName, lastName, email )
         if not person:
             continue
         id = int(re.search(r"api/v1/person/person/(.+)/$", person).group(1))
-        if registrationType.text.startswith('onsite'):
-            if countryCode in countries:
-                countries[countryCode] = countries[countryCode] + 1
-            else:
-                countries[countryCode] = 1
-
         participant = { 'first_name': firstName, 'last_name': lastName, 'country_code': countryCode, 'email' : email, 'id': id}
-        if registrationType.text.startswith('onsite') or  registrationType.text.endswith(' onsite'):
-            participantsOnsite[id] = participant
-        elif registrationType.text.startswith('remote') or registrationType.text.endswith(' remote'):
-            participantsRemote[id] = participant
-        elif registrationType.text == 'hackathon_onsite' or registrationType.text == 'hackathon_remote':
-            continue
-        else:
-            print('Unknown reg_type', registrationType.text)
-            continue
+        tickets = object.find('tickets')
+        registrationType = None
+        for ticket in tickets:
+            attendanceType = ticket.find('attendance_type').text
+            if attendanceType.endswith('/onsite/'):
+                registrationType = 'onsite'
+                participantsOnsite[id] = participant
+                if countryCode in countries:
+                    countries[countryCode] = countries[countryCode] + 1
+                else:
+                    countries[countryCode] = 1
+                break
+            elif attendanceType.endswith('/remote/'):
+                registrationType = 'remote'
+                participantsRemote[id] = participant
+                break
 
 with open('participants2.js', 'w', encoding = 'utf-8') as f:
     f.write("var participantsOnsite = ")

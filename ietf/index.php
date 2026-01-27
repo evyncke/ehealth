@@ -52,7 +52,7 @@ if ($ietfNumber) {
 } else {
 ?>
 <!--- get all IETF participants onsite + per country statistics + date of collection -->
-	<script type="text/javascript" src="participants.js"></script>
+	<script type="text/javascript" src="participants2.js"></script>
 	<script type="text/javascript" src="leaders.js"></script>
 	<script type="text/javascript" src="wgchairs.js"></script>
 	<script type="text/javascript" src="wg.js"></script>

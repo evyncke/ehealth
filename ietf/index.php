@@ -18,7 +18,7 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants2
 ?><!doctype html>
 <html lang="en">
 <head>
-<title>IETF Participants and COVID-19</title>
+<title>IETF Participants</title>
 <!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -77,7 +77,7 @@ ietfCountry = countryISOMapping[meetings['next']['country2']] ;
 <?php
 }
 ?>
-document.title = 'IETF-' + ietfNumber + ' Participants and COVID-19' ;
+document.title = 'IETF-' + ietfNumber + ' Participants' ;
 covid_data = '' ;
 
 function loadCovidData() {
@@ -129,7 +129,7 @@ function drawChart() {
 			maxCountry = isoCode ;
 		}
 		if (isoCode in covid_data)
-			data.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' participants, new cases: ' + newCases + '/million']) ;
+			data.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' participants, new COVID-19 cases: ' + newCases + '/million']) ;
 		else
 			console.log("No data for isoCode = ", isoCode) ;
 	}
@@ -325,6 +325,23 @@ function onLoad() {
 	displayCategory('draft_authors', 'documents authors in the last 4 months', draftAuthorsOnsite, draftAuthorsRemote, draftAuthorsUnknown, draftAuthorsTotal) ;
 } // onLoad()
 
+document.addEventListener('DOMContentLoaded', function () {
+    const checkbox = document.getElementById('toggleCheckbox');
+    const hiddenElements = document.querySelectorAll('.covid');
+
+    checkbox.addEventListener('change', function () {
+        hiddenElements.forEach(el => {
+            if (this.checked) {
+                // If checked, remove 'd-none' to show the element
+                el.classList.remove('d-none');
+            } else {
+                // If unchecked, add 'd-none' to hide the element
+                el.classList.add('d-none');
+            }
+        });
+    });
+});
+
 </script>
 <!-- Matomo -->
 <script type="text/javascript">
@@ -346,7 +363,7 @@ function onLoad() {
 </head>
 <body onload="onLoad();">
 <div class="container-fluid">
-<h1>IETF<span id="ietfNumberSpan"></span> Participants and COVID-19</h1>
+<h1>IETF<span id="ietfNumberSpan"></span> Participants<span class="covid d-none"> and COVID-19</span></h1>
 <div class="row">
 <div class="col-sm-12 col-lg-6 col-xxl-4">
 <h2>On-site participants</h2>
@@ -354,7 +371,7 @@ function onLoad() {
 <p>Hoover over one pie piece to get more information.</p>
 </div> <!-- col -->
 
-<div class="col-sm-12 col-lg-6 col-xxl-4">
+<div class="col-sm-12 col-lg-6 col-xxl-4 d-none covid">
 <h2>COVID-19 Data</h2>
 <div id="data"></div>
 </div> <!-- col -->
@@ -439,10 +456,21 @@ Get <a href="wg.php">more information per working group.</a>
 </div> <!-- col -->
 
 </div> <!-- row -->
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" id="toggleCheckbox">
+  <label class="form-check-label" for="toggleCheckbox">
+    Show COVID-19 data
+  </label>
+</div>
 <hr>
 <?=$ipv4only_message?>
-<p>If you want to know more on how IETF technologies were used worldwide for "COVID-19 certificates", here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/>
-<em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>, itself based on <a href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE COVID-19 Data</a>.
+<p>
+<span class="covid d-none">If you want to know more on how IETF technologies were used worldwide for "COVID-19 certificates", 
+	here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/></span>
+<em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), 
+recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, 
+<a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data
+<span class="covid d-none">, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>, itself based on <a href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE COVID-19 Data</a></span>.
 The power of open data!</em><br/>
 <small>Code is open source and stored on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
 <!-- Matomo Image Tracker and warning about JS requirement -->

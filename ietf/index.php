@@ -14,7 +14,7 @@
 #     limitations under the License.
 #
 # HTTP/2 push of CSS via header()
-header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants2.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script,</ietf/meetings.js>;rel=preload;as=script') ;
+header('Link: </draftauthors.js>;rel=preload;as=script,</participants2.js>;rel=preload;as=script,</wgchairs.js>;rel=preload;as=script,</leaders.js>;rel=preload;as=script,</owid.png>;rel=preload;as=image,</isoCountry.js>;rel=preload;as=script,</wg.js>;rel=preload;as=script,</utils.js>;rel=preload;as=script,</meetings.js>;rel=preload;as=script') ;
 ?><!doctype html>
 <html lang="en">
 <head>

@@ -62,6 +62,12 @@ function findParticipantByName(fullName, table) {
         return false ;
 }
 
+// Find a participants based on the datatracker ID
+function findParticipantById(id, table) {
+        if (table[id]) return true ;
+        return false ;
+}
+
 function fuzzyMatch(fullName) {
 	var nameDisplayed = false ;
 

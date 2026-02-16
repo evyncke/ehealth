@@ -25,6 +25,7 @@ header('Link: </participants2.js>;rel=preload;as=script,</wg.js>;rel=preload;as=
 <!-- Bootstrap CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <!--- get all IETF participants onsite + per country statistics + date of collection -->
+<!-- TODO handle past IETF meetings -->
 	<script type="text/javascript" src="participants2.js"></script>
 	<script type="text/javascript" src="wg.js"></script>
 	<script type="text/javascript" src="wgchairs.js"></script>
@@ -72,6 +73,12 @@ participantsUnknownCount = 0 ;
 participantsOnsiteNames = [] ;
 participantsRemoteNames = [] ; 
 participantsUnknownNames = [] ;
+
+// Find a participants based on the datatracker ID
+function findParticipantById(id, table) {
+        if (table[id]) return true ;
+        return false ;
+}
 
 function displayCategory(elemId, name, onsite, remote, unknown, total, onsiteNames = null, remoteNames = null, unknownNames = null) {
 	var leaders = document.getElementById(elemId) ;
@@ -126,9 +133,9 @@ function checkWGLeaders(wgName, elem) {
 			if (wgRole[0] != wgName)
 				continue ;
 			msg += '<li>' + wgChairs[p].name + ' (' + wgRole[1] + '): ' ;
-			if (findParticipantByName(wgChairs[p].name, participantsOnsite) || findParticipantByName(wgChairs[p].ascii_name, participantsOnsite))
+			if (findParticipantById(p, participantsOnsite) || findParticipantByName(wgChairs[p].name, participantsOnsite) || findParticipantByName(wgChairs[p].ascii_name, participantsOnsite))
 				msg += 'onsite;' ;
-			else if (findParticipantByName(wgChairs[p].name, participantsRemote) || findParticipantByName(wgChairs[p].ascii_name, participantsRemote))
+			else if (findParticipantById(p, participantsRemote) ||findParticipantByName(wgChairs[p].name, participantsRemote) || findParticipantByName(wgChairs[p].ascii_name, participantsRemote))
 				msg += 'remote;' ;
 			else
 				msg += 'not found on registration;' ;
@@ -185,13 +192,13 @@ function onChange(elem) {
   var _paq = window._paq = window._paq || [];
   /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
   _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-    _paq.push(["setCookieDomain", "*.ehealth.vyncke.org"]);
+    _paq.push(["setCookieDomain", "*.ietf.vyncke.org"]);
     _paq.push(['trackPageView']);
       _paq.push(['enableLinkTracking']);
       (function() {
 	          var u="//analytics.vyncke.org/";
 		      _paq.push(['setTrackerUrl', u+'matomo.php']);
-		      _paq.push(['setSiteId', '6']);
+		      _paq.push(['setSiteId', '9']);
 		          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
 		          g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
 			    })();

@@ -183,12 +183,6 @@ function displayCategory(elemId, name, onsite, remote, unknown, total, onsiteNam
 	document.getElementById(elemId + 'Remote').style.width = Math.round(100.0*remote/total) + "%" ;
 	document.getElementById(elemId + 'Remote').innerHTML = Math.round(100.0*remote/total) + "%" ;
 }
-//
-// Find a participants based on the datatracker ID
-function findParticipantById(id, table) {
-        if (table[id]) return true ;
-        return false ;
-}
 
 // Find a participants based on the email
 function findParticipantByEmail(email, table) {
@@ -348,13 +342,13 @@ document.addEventListener('DOMContentLoaded', function () {
   var _paq = window._paq = window._paq || [];
   /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
   _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-    _paq.push(["setCookieDomain", "*.ehealth.vyncke.org"]);
+    _paq.push(["setCookieDomain", "*.ietf.vyncke.org"]);
     _paq.push(['trackPageView']);
       _paq.push(['enableLinkTracking']);
       (function() {
 	          var u="//analytics.vyncke.org/";
 		      _paq.push(['setTrackerUrl', u+'matomo.php']);
-		      _paq.push(['setSiteId', '6']);
+		      _paq.push(['setSiteId', '9']);
 		          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
 		          g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
 			    })();

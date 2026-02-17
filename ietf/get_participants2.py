@@ -65,7 +65,8 @@ meetingNumber = meetings['next']['number']
 
 # Currently, lastname, firstname, affiliation, country
 
-countries = {}
+countriesOnsite = {}
+countriesRemote = {}
 participantsOnsite = {}
 participantsRemote = {}
 
@@ -85,7 +86,7 @@ while (nextUri):
     meta = root.find('meta')
     nextUri = meta.find('next').text
     totalCount = meta.find('total_count').text
-    print("Got {} entries".format(totalCount))
+    print("Indicated total {} entries".format(totalCount))
     objects = root.find('objects')
     for object in objects:
         firstName = object.find('first_name').text
@@ -104,14 +105,18 @@ while (nextUri):
             if attendanceType.endswith('/onsite/'):
                 registrationType = 'onsite'
                 participantsOnsite[id] = participant
-                if countryCode in countries:
-                    countries[countryCode] = countries[countryCode] + 1
+                if countryCode in countriesOnsite:
+                    countriesOnsite[countryCode] = countriesOnsite[countryCode] + 1
                 else:
-                    countries[countryCode] = 1
+                    countriesOnsite[countryCode] = 1
                 break
             elif attendanceType.endswith('/remote/'):
                 registrationType = 'remote'
                 participantsRemote[id] = participant
+                if countryCode in countriesRemote:
+                    countriesRemote[countryCode] = countriesRemote[countryCode] + 1
+                else:
+                    countriesRemote[countryCode] = 1
                 break
 
 with open('participants2.js', 'w', encoding = 'utf-8') as f:
@@ -119,12 +124,18 @@ with open('participants2.js', 'w', encoding = 'utf-8') as f:
     json.dump(participantsOnsite, f, ensure_ascii = False, indent = 2)
     f.write(";\n")
     f.write("var countries = ")
-    json.dump(countries, f, ensure_ascii = False, indent = 2)
+    json.dump(countriesOnsite, f, ensure_ascii = False, indent = 2)
+    f.write(";\n")
+    f.write("var countriesOnsite = ")
+    json.dump(countriesOnsite, f, ensure_ascii = False, indent = 2)
     f.write(";\n")
     f.write("var participantsRemote = ")
     json.dump(participantsRemote, f, ensure_ascii = False, indent = 2)
     f.write(";\n")
-    now = datetime.datetime.now(datetime.timezone.utc)
+    f.write("var countriesRemote = ")
+    json.dump(countriesRemote, f, ensure_ascii = False, indent = 2)
+    f.write(";\n")
+    now = datetime.datetime.now(datetime.timezone.utc)  
     f.write("var registrationCollectionDate = '{}';\n".format(now.isoformat(timespec='seconds')))
 
 with open('remote2.json', 'w', encoding = 'utf-8') as f:

@@ -100,18 +100,23 @@ google.charts.setOnLoadCallback(loadCovidData);
 // instantiates the pie chart, passes in the data and
 // draws it.
 function drawChart() {
-	var data = new google.visualization.DataTable();
-	data.addColumn('string', 'Country');
-	data.addColumn('number', 'Onsite Participants');
-	data.addColumn({type : 'string', role : 'tooltip'}) ;
-	// Add data
-	var participantsCount = 0 ;
+	var dataOnsite = new google.visualization.DataTable();
+	dataOnsite.addColumn('string', 'Country');
+	dataOnsite.addColumn('number', 'Onsite Participants');
+	dataOnsite.addColumn({type : 'string', role : 'tooltip'}) ;
+	var dataRemote = new google.visualization.DataTable();
+	dataRemote.addColumn('string', 'Country');
+	dataRemote.addColumn('number', 'Remote Participants');
+	dataRemote.addColumn({type : 'string', role : 'tooltip'}) ;
+
+	// Add data for onsite participants
+	var participantsOnsiteCount = 0 ;
 	var weightedNewCases = 0.0 ;
 	var minCountry = '', maxCountry = '', minNewcases = 9999999, maxNewcases = -1 ;
 	var largeCountries = new Array(myCountry, ietfCountry) ;
-	for (let country in countries) {
-		participants = countries[country] ;
-		participantsCount += participants ;
+	for (let country in countriesOnsite) {
+		participants = countriesOnsite[country] ;
+		participantsOnsiteCount += participants ;
 		isoCode = countryISOMapping[country] ;
 		if (participants >= 5)
 			largeCountries.push(isoCode) ;
@@ -129,24 +134,48 @@ function drawChart() {
 			maxCountry = isoCode ;
 		}
 		if (isoCode in covid_data)
-			data.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' participants, new COVID-19 cases: ' + newCases + '/million']) ;
-		else
+			dataOnsite.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' onsite participants, new COVID-19 cases: ' + newCases + '/million']) ;
+		else {
+			dataOnsite.addRow([isoCode, participants, isoCode]) ;
 			console.log("No data for isoCode = ", isoCode) ;
+		}
 	}
 	// Sort the data based on the onsite participants
-	data.sort({column: 1, desc: true}) ;
+	dataOnsite.sort({column: 1, desc: true}) ;
 	// Set chart options
-	var options = {'title':'Onsite participants per country',
+	var optionsOnsite = {'title': 'Onsite participants per country (' + participantsOnsiteCount + ' total)',
 		sliceVisibilityThreshold: .01,
 		'width':500,
 		'height':500};
 	
+	// Add data for remote participants
+	var participantsRemoteCount = 0 ;
+	for (let country in countriesRemote) {
+		participants = countriesRemote[country] ;
+		participantsRemoteCount += participants ;
+		isoCode = countryISOMapping[country] ;
+		if (isoCode in covid_data)
+			dataRemote.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' remote participants']) ;
+		else {
+			dataRemote.addRow([isoCode, participants, isoCode]) ;
+			console.log("No data for isoCode = ", isoCode) ;
+		}	
+	}
+	// Sort the data based on the remote participants
+	dataRemote.sort({column: 1, desc: true}) ;
+	var optionsRemote = {'title': 'Remote participants per country (' + participantsRemoteCount + ' total)',
+		sliceVisibilityThreshold: .01,
+		'width':500,
+		'height':500};
+
 	// Instantiate and draw our chart, passing in some options.
-	var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));
-	chart.draw(data, options);
+	var chartOnsite = new google.visualization.PieChart(document.getElementById('pie_chart_div_onsite'));
+	var chartRemote = new google.visualization.PieChart(document.getElementById('pie_chart_div_remote'));
+	chartOnsite.draw(dataOnsite, optionsOnsite);
+	chartRemote.draw(dataRemote, optionsRemote);
 
 	var text = document.getElementById('data') ;
-	weightedNewCases /= participantsCount ;
+	weightedNewCases /= participantsOnsiteCount ;
 	var today = new Date() ;
 	var oneYearAgo = (today.getFullYear()-1) + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2) ;
 	owidUrl = 'https://ourworldindata.org/explorers/coronavirus-data-explorer?zoomToSelection=true&time=' + oneYearAgo + '..latest&facet=none&pickerSort=desc&pickerMetric=new_cases_per_million&Metric=Confirmed+cases&Interval=7-day+rolling+average&Relative+to+Population=true&Color+by+test+positivity=false&country=' + largeCountries.join('~') ;
@@ -154,7 +183,7 @@ function drawChart() {
 		text.innerHTML = '<p>No registration yet.</p>' ;
 		return ;
 	}
-	text.innerHTML = "<p>There are " + participantsCount + " in person and " + Object.keys(participantsRemote).length + " remote participants. 7-day-smoothed new cases per million:<ul>" +
+	text.innerHTML = "<p>There are " + participantsOnsiteCount + " in person and " + participantsRemoteCount + + " remote participants. 7-day-smoothed new cases per million:<ul>" +
 		"<li>weighted on all in person participants: " + Math.round(weightedNewCases) + "</li>" +
 		"<li>country with minimum new cases: " + minCountry + " (" + covid_data[minCountry].location + ") with " + minNewcases + "</li>" +
 		"<li>country with maximum new cases: " + maxCountry + " (" + covid_data[maxCountry].location + ") with " + Math.round(maxNewcases) + "</li>" +
@@ -360,8 +389,10 @@ document.addEventListener('DOMContentLoaded', function () {
 <h1>IETF<span id="ietfNumberSpan"></span> Participants<span class="covid d-none"> and COVID-19</span></h1>
 <div class="row">
 <div class="col-sm-12 col-lg-6 col-xxl-4">
-<h2>On-site participants</h2>
-<div id="pie_chart_div">Please wait while loading... if not loaded after 1 minute, please reload</div>
+<h2>Onsite participants</h2>
+<div id="pie_chart_div_onsite">Please wait while loading... if not loaded after 1 minute, please reload</div>
+<h2>Remote participants</h2>
+<div id="pie_chart_div_remote">Please wait while loading... if not loaded after 1 minute, please reload</div>
 <p>Hoover over one pie piece to get more information.</p>
 </div> <!-- col -->
 
@@ -475,3 +506,4 @@ The power of open data!</em><br/>
 <!-- Bootstrap bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
+</html>

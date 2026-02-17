@@ -179,7 +179,7 @@ function drawChart() {
 	var today = new Date() ;
 	var oneYearAgo = (today.getFullYear()-1) + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2) ;
 	owidUrl = 'https://ourworldindata.org/explorers/coronavirus-data-explorer?zoomToSelection=true&time=' + oneYearAgo + '..latest&facet=none&pickerSort=desc&pickerMetric=new_cases_per_million&Metric=Confirmed+cases&Interval=7-day+rolling+average&Relative+to+Population=true&Color+by+test+positivity=false&country=' + largeCountries.join('~') ;
-	if (participantsCount == 0) {
+	if (participantsOnsiteCount == 0) {
 		text.innerHTML = '<p>No registration yet.</p>' ;
 		return ;
 	}

@@ -133,8 +133,6 @@ while (nextUri):
     nextUri = meta.find('next').text
     objects = root.find('objects')
     for object in objects:
-        if object.find('id').text == '2318' or object.find('id').text == '2319':
-            print(object.find('id').text, object.find('state').text, object.find('type').text)
         state = object.find('state') 
         if state.text != '/api/v1/name/groupstatename/active/' and state.text != '/api/v1/name/groupstatename/bof/':
             continue

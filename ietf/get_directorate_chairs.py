@@ -126,7 +126,7 @@ with open('directorate.json', 'w', encoding = 'utf-8') as f:
     json.dump(cachedDirectorates, f, ensure_ascii = False, indent = 2)
 
 with open('directorate.js', 'w', encoding = 'utf-8') as f:
-    f.write("var directoratess = ")
+    f.write("var directorates = ")
     json.dump(cachedDirectorates, f, ensure_ascii = False, indent = 2)
     f.write(";")
     now = datetime.datetime.now(datetime.timezone.utc)

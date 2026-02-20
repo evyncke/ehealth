@@ -233,7 +233,7 @@ Select an IETF Working Group:
 <em>Registration data collected on <span id="registrationDate"></span> (hourly refresh),  WG/BoF as of <span id="wgsDate"></span> (daily refresh),
  <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data.
 The power of open data!</em><br/>
-<small>Code is open source and store on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
+<small>Code is open source and stores on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
 <!-- Matomo Image Tracker and warning about JS requirement -->
 <noscript><img referrerpolicy="no-referrer-when-downgrade" src="https://analytics.vyncke.org/matomo.php?idsite=6&amp;rec=1" style="border:0" alt="" />
 <b>This site requires javascript.</b></noscript>

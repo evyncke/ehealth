@@ -104,15 +104,23 @@ function checkDirectorateMembers(directorateName, elem) {
             roles.push(directorateRole[1]) ;
 		}
         if (roles != '') {
+            participantsCount++ ;
             msg += '<li>' + directorateMembers[p].name + ' (' + roles.join(', ') + '): ' ;
-            if (findParticipantById(p, participantsOnsite) || findParticipantByName(directorateMembers[p].name, participantsOnsite) || findParticipantByName(directorateMembers[p].ascii_name, participantsOnsite))
+            if (findParticipantById(p, participantsOnsite) || findParticipantByName(directorateMembers[p].name, participantsOnsite) || findParticipantByName(directorateMembers[p].ascii_name, participantsOnsite)) {
                 msg += '<b>onsite</b>;' ;
-            else if (findParticipantById(p, participantsRemote) ||findParticipantByName(directorateMembers[p].name, participantsRemote) || findParticipantByName(directorateMembers[p].ascii_name, participantsRemote))
+                participantsOnSiteCount++ ;
+                participantsOnsiteNames.push(directorateMembers[p].name) ;
+            } else if (findParticipantById(p, participantsRemote) ||findParticipantByName(directorateMembers[p].name, participantsRemote) || findParticipantByName(directorateMembers[p].ascii_name, participantsRemote)) {
                 msg += 'remote;' ;
-            else
+                participantsRemoteCount++ ;
+                participantsRemoteNames.push(directorateMembers[p].name) ;
+            } else {
                 msg += '<em>not found on registration</em>;' ;
+                participantsUnknownCount++ ;
+                participantsUnknownNames.push(directorateMembers[p].name) ;
+            }
             msg += '</li>' ;
-}
+        }
     }
 	msg += '</ul>' ;
 	elem.insertAdjacentHTML('beforeend', msg) ;
@@ -140,6 +148,11 @@ function onChange(elem) {
 	// Display progress to the user
 	document.getElementById('resultText').insertAdjacentHTML('beforeend', '<h2>' + directorates[elem.value].name + ' WG<h2>') ;
 	checkDirectorateMembers(elem.value, document.getElementById('resultText')) ;
+    // Now let's display the outcome
+    document.getElementById('participants').style.display = 'block' ;
+    displayCategory('participants', 'expected attendees', participantsOnSiteCount, participantsRemoteCount, participantsUnknownCount, participantsCount,
+        participantsOnsiteNames.join(', '), participantsRemoteNames.join(', '), participantsUnknownNames.join(', '))
+    document.getElementById('participantsProgressBar').style.display = 'flex' ;
 }
 
 </script>

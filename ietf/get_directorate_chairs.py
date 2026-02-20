@@ -82,7 +82,7 @@ lastMeetingDate = meetings['last']['date']
 nextUri= "/api/v1/group/group/?format=xml&limit=200&offset=0&type=review&state=active"
 while (nextUri):
     url = "https://datatracker.ietf.org" + nextUri
-    print("Getting", url)
+    print("Fetching", url)
     tree = etree.parse(request.urlopen(url))
     root = tree.getroot()
     meta = root.find('meta')
@@ -90,7 +90,7 @@ while (nextUri):
     objects = root.find('objects')
     for object in objects:
         acronym = object.find('acronym') 
-        print('Acronym', acronym.text)
+        print('Found directorate', acronym.text)
         listEmail = object.find('list_email') 
         # Type can be /api/v1/name/grouptypename/rg/ or nomcom or sdo, team, area, or wg
         directorateTypeName = object.find('type').text
@@ -106,11 +106,11 @@ while (nextUri):
 # Loop for all active WG
 for directorate in cachedDirectorates:
     getMembers(directorate, 'chair')
-    getMembers(directorate, 'delegate')
+    getMembers(directorate, 'ad')
+    getMembers(directorate, 'pre-ad')
     getMembers(directorate, 'secr')
     getMembers(directorate, 'member')
     getMembers(directorate, 'reviewer')
-
 
 with open('dirmembers.json', 'w', encoding = 'utf-8') as f:
     json.dump(cachedPersons, f, ensure_ascii = False, indent = 2)

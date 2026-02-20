@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div><!-- accordion -->
 
 <br>
-Get <a href="wg.php">more information per working group.</a>
+Get more information per <a href="wg.php">working group/BoF</a>, or <a href="directorate.php">directorate</a>.
 <br>
 
 <hr>

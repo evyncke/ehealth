@@ -93,23 +93,27 @@ function displayCategory(elemId, name, onsite, remote, unknown, total, onsiteNam
 } ; 
 
 function checkDirectorateMembers(directorateName, elem) {
-	elem.insertAdjacentHTML('beforeend', '<p><em>Checking the status of chairs and members...</em></p>') ;
+	elem.insertAdjacentHTML('beforeend', '<p><em>Checking the status of chairs, secretaries, reviewers, and AD...</em></p>') ;
 	var msg = '<ul>' ;
 	for (let p in directorateMembers) {
+        var roles = []
 		for (let role in directorateMembers[p].role) {
 			var directorateRole = directorateMembers[p].role[role].split('-') ;
 			if (directorateRole[0] != directorateName)
 				continue ;
-			msg += '<li>' + directorateMembers[p].name + ' (' + directorateRole[1] + '): ' ;
-			if (findParticipantById(p, participantsOnsite) || findParticipantByName(directorateMembers[p].name, participantsOnsite) || findParticipantByName(directorateMembers[p].ascii_name, participantsOnsite))
-				msg += 'onsite;' ;
-			else if (findParticipantById(p, participantsRemote) ||findParticipantByName(directorateMembers[p].name, participantsRemote) || findParticipantByName(directorateMembers[p].ascii_name, participantsRemote))
-				msg += 'remote;' ;
-			else
-				msg += 'not found on registration;' ;
-			msg += '</li>' ;
+            roles.push(directorateRole[1]) ;
 		}
-	}
+        if (roles != '') {
+            msg += '<li>' + directorateMembers[p].name + ' (' + roles.join(', ') + '): ' ;
+            if (findParticipantById(p, participantsOnsite) || findParticipantByName(directorateMembers[p].name, participantsOnsite) || findParticipantByName(directorateMembers[p].ascii_name, participantsOnsite))
+                msg += '<b>onsite</b>;' ;
+            else if (findParticipantById(p, participantsRemote) ||findParticipantByName(directorateMembers[p].name, participantsRemote) || findParticipantByName(directorateMembers[p].ascii_name, participantsRemote))
+                msg += 'remote;' ;
+            else
+                msg += '<em>not found on registration</em>;' ;
+            msg += '</li>' ;
+}
+    }
 	msg += '</ul>' ;
 	elem.insertAdjacentHTML('beforeend', msg) ;
 }
@@ -185,7 +189,7 @@ Select an IETF Directorate:
 <em>Registration data collected on <span id="registrationDate"></span> (hourly refresh),  directorate as of <span id="directoratesDate"></span> (daily refresh),
  <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data.
 The power of open data!</em><br/>
-<small>Code is open source and store on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
+<small>Code is open source and stored on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
 <!-- Matomo Image Tracker and warning about JS requirement -->
 <noscript><img referrerpolicy="no-referrer-when-downgrade" src="https://analytics.vyncke.org/matomo.php?idsite=6&amp;rec=1" style="border:0" alt="" />
 <b>This site requires javascript.</b></noscript>

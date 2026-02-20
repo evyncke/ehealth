@@ -64,10 +64,10 @@ def getGroupFromName(name):
 
 
 def getMembers(groupName, roleName):
-    print("Looking for {} in {}".format(roleName, groupName))
     group = getGroupFromName(groupName)
     roleSlug = "/api/v1/name/rolename/{}/".format(roleName)
     groupUri = "https://datatracker.ietf.org/api/v1/group/role/?format=xml&group={}&role={}".format(group['id'], roleSlug)
+    print("Looking for {} in {}, using {}".format(roleName, groupName, groupUri))
     groupTree = etree.parse(request.urlopen(groupUri))
     groupRoot = groupTree.getroot()
     for object in groupRoot.find('objects'):
@@ -98,6 +98,7 @@ if False:
 # Find all IESG members
 getMembers('ietf', 'chair')
 getMembers('iesg', 'ad')
+getMembers('iesg', 'pre-ad')  # Role exist but does not seem to be used...
 getMembers('iab', 'chair')
 getMembers('iab', 'member')
 #getMembers('irtf', 'chair')

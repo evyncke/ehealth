@@ -64,41 +64,27 @@ def getGroupFromName(name):
 
 
 def getMembers(groupName, roleName):
-    group = getGroupFromName(groupName)
     roleSlug = "/api/v1/name/rolename/{}/".format(roleName)
-    groupUri = "https://datatracker.ietf.org/api/v1/group/role/?format=xml&group={}&role={}".format(group['id'], roleSlug)
+    if groupName == '':
+        groupUri = "https://datatracker.ietf.org/api/v1/group/role/?format=xml&name={}".format(roleName)
+    else:
+        group = getGroupFromName(groupName)
+        groupUri = "https://datatracker.ietf.org/api/v1/group/role/?format=xml&group={}&name={}".format(group['id'], roleName)
     print("Looking for {} in {}, using {}".format(roleName, groupName, groupUri))
     groupTree = etree.parse(request.urlopen(groupUri))
     groupRoot = groupTree.getroot()
     for object in groupRoot.find('objects'):
         if object.find('name').text != roleSlug:
+            print('skipping',object.find('name').text) 
             continue
         # person email  <email>/api/v1/person/email/Zaheduzzaman.Sarker@ericsson.com/</email>\n  <group>/api/v1/group/group/2/</group>\n  <id type="integer">12152</id>\n  <name>/api/v1/name/rolename/ad/</name>\n  <person>/api/v1/person/person/109753/</person>\n 
         email = re.search(r"api/v1/person/email/(.+)/$", object.find('email').text).group(1)
         getPerson(object.find('person').text, email = email, role = groupName + '-' + roleName)
 
-
-# Read all groups
-if False:
-  url = "https://datatracker.ietf.org/api/v1/group/group/?format=xml&limit=1000&offset=0"
-
-  tree = etree.parse(request.urlopen(url))
-  root = tree.getroot()
-  objects = root.find('objects')
-  for object in objects:
-      state = object.find('state') 
-      if not state.text == '/api/v1/name/groupstatename/active/':
-          continue
-      acronym = object.find('acronym') 
-      cachedGroups[acronym.text] = { 'id': object.find('id').text, 'name': object.find('name').text}
-
-# Or smarter with a per group search ?
-# https://datatracker.ietf.org/api/v1/group/group/?acronym=iesg
-
-# Find all IESG members
+# Find all IESG/IAB members
 getMembers('ietf', 'chair')
 getMembers('iesg', 'ad')
-getMembers('iesg', 'pre-ad')  # Role exist but does not seem to be used...
+getMembers('', 'pre-ad')  # Role exist but is not linked to any specific group
 getMembers('iab', 'chair')
 getMembers('iab', 'member')
 #getMembers('irtf', 'chair')

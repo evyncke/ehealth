@@ -157,6 +157,8 @@ while (nextUri):
 for group in cachedGroups:
     getMembers(group, 'chair')
     getMembers(group, 'delegate')
+    getMembers(group, 'ad')
+    getMembers(group, 'secr')
     getBlueSheets(group)
 
 with open('wgchairs.json', 'w', encoding = 'utf-8') as f:

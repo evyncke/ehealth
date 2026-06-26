@@ -1,5 +1,5 @@
 <?php
-# Copyright 2022-24 Eric Vyncke, evyncke@cisco.com
+# Copyright 2022-26 Eric Vyncke, evyncke@cisco.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
 #     limitations under the License.
 #
 # HTTP/2 push of CSS via header()
-header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants2.js>;rel=preload;as=script,</ietf/wgchairs.js>;rel=preload;as=script,</ietf/leaders.js>;rel=preload;as=script,</ietf/owid.png>;rel=preload;as=image,</ietf/isoCountry.js>;rel=preload;as=script,</ietf/wg.js>;rel=preload;as=script,</ietf/utils.js>;rel=preload;as=script,</ietf/meetings.js>;rel=preload;as=script') ;
+header('Link: </draftauthors.js>;rel=preload;as=script,</participants2.js>;rel=preload;as=script,</wgchairs.js>;rel=preload;as=script,</leaders.js>;rel=preload;as=script,</owid.png>;rel=preload;as=image,</isoCountry.js>;rel=preload;as=script,</wg.js>;rel=preload;as=script,</utils.js>;rel=preload;as=script,</meetings.js>;rel=preload;as=script') ;
 ?><!doctype html>
 <html lang="en">
 <head>
-<title>IETF Participants and COVID-19</title>
+<title>IETF Participants</title>
 <!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,6 +28,7 @@ header('Link: </ietf/draftauthors.js>;rel=preload;as=script,</ietf/participants2
 	<script type="text/javascript" src="utils.js"></script>
 	<script type="text/javascript" src="isoCountry.js"></script>
 	<script type="text/javascript" src="meetings.js"></script>
+	<script type="text/javascript" src="utils.js"></script>
 <!--- Google charts -->
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <?php
@@ -76,7 +77,7 @@ ietfCountry = countryISOMapping[meetings['next']['country2']] ;
 <?php
 }
 ?>
-document.title = 'IETF-' + ietfNumber + ' Participants and COVID-19' ;
+document.title = 'IETF-' + ietfNumber + ' Participants' ;
 covid_data = '' ;
 
 function loadCovidData() {
@@ -99,18 +100,23 @@ google.charts.setOnLoadCallback(loadCovidData);
 // instantiates the pie chart, passes in the data and
 // draws it.
 function drawChart() {
-	var data = new google.visualization.DataTable();
-	data.addColumn('string', 'Country');
-	data.addColumn('number', 'Onsite Participants');
-	data.addColumn({type : 'string', role : 'tooltip'}) ;
-	// Add data
-	var participantsCount = 0 ;
+	var dataOnsite = new google.visualization.DataTable();
+	dataOnsite.addColumn('string', 'Country');
+	dataOnsite.addColumn('number', 'Onsite Participants');
+	dataOnsite.addColumn({type : 'string', role : 'tooltip'}) ;
+	var dataRemote = new google.visualization.DataTable();
+	dataRemote.addColumn('string', 'Country');
+	dataRemote.addColumn('number', 'Remote Participants');
+	dataRemote.addColumn({type : 'string', role : 'tooltip'}) ;
+
+	// Add data for onsite participants
+	var participantsOnsiteCount = 0 ;
 	var weightedNewCases = 0.0 ;
 	var minCountry = '', maxCountry = '', minNewcases = 9999999, maxNewcases = -1 ;
 	var largeCountries = new Array(myCountry, ietfCountry) ;
-	for (let country in countries) {
-		participants = countries[country] ;
-		participantsCount += participants ;
+	for (let country in countriesOnsite) {
+		participants = countriesOnsite[country] ;
+		participantsOnsiteCount += participants ;
 		isoCode = countryISOMapping[country] ;
 		if (participants >= 5)
 			largeCountries.push(isoCode) ;
@@ -128,32 +134,56 @@ function drawChart() {
 			maxCountry = isoCode ;
 		}
 		if (isoCode in covid_data)
-			data.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' participants, new cases: ' + newCases + '/million']) ;
-		else
+			dataOnsite.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' onsite participants, new COVID-19 cases: ' + newCases + '/million']) ;
+		else {
+			dataOnsite.addRow([isoCode, participants, isoCode]) ;
 			console.log("No data for isoCode = ", isoCode) ;
+		}
 	}
 	// Sort the data based on the onsite participants
-	data.sort({column: 1, desc: true}) ;
+	dataOnsite.sort({column: 1, desc: true}) ;
 	// Set chart options
-	var options = {'title':'Onsite participants per country',
+	var optionsOnsite = {'title': 'Onsite participants per country (' + participantsOnsiteCount + ' total)',
 		sliceVisibilityThreshold: .01,
 		'width':500,
 		'height':500};
 	
+	// Add data for remote participants
+	var participantsRemoteCount = 0 ;
+	for (let country in countriesRemote) {
+		participants = countriesRemote[country] ;
+		participantsRemoteCount += participants ;
+		isoCode = countryISOMapping[country] ;
+		if (isoCode in covid_data)
+			dataRemote.addRow([isoCode, participants, isoCode + ' (' + covid_data[isoCode].location + '), ' + participants + ' remote participants']) ;
+		else {
+			dataRemote.addRow([isoCode, participants, isoCode]) ;
+			console.log("No data for isoCode = ", isoCode) ;
+		}	
+	}
+	// Sort the data based on the remote participants
+	dataRemote.sort({column: 1, desc: true}) ;
+	var optionsRemote = {'title': 'Remote participants per country (' + participantsRemoteCount + ' total)',
+		sliceVisibilityThreshold: .01,
+		'width':500,
+		'height':500};
+
 	// Instantiate and draw our chart, passing in some options.
-	var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));
-	chart.draw(data, options);
+	var chartOnsite = new google.visualization.PieChart(document.getElementById('pie_chart_div_onsite'));
+	var chartRemote = new google.visualization.PieChart(document.getElementById('pie_chart_div_remote'));
+	chartOnsite.draw(dataOnsite, optionsOnsite);
+	chartRemote.draw(dataRemote, optionsRemote);
 
 	var text = document.getElementById('data') ;
-	weightedNewCases /= participantsCount ;
+	weightedNewCases /= participantsOnsiteCount ;
 	var today = new Date() ;
 	var oneYearAgo = (today.getFullYear()-1) + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2) ;
 	owidUrl = 'https://ourworldindata.org/explorers/coronavirus-data-explorer?zoomToSelection=true&time=' + oneYearAgo + '..latest&facet=none&pickerSort=desc&pickerMetric=new_cases_per_million&Metric=Confirmed+cases&Interval=7-day+rolling+average&Relative+to+Population=true&Color+by+test+positivity=false&country=' + largeCountries.join('~') ;
-	if (participantsCount == 0) {
+	if (participantsOnsiteCount == 0) {
 		text.innerHTML = '<p>No registration yet.</p>' ;
 		return ;
 	}
-	text.innerHTML = "<p>There are " + participantsCount + " in person and " + Object.keys(participantsRemote).length + " remote participants. 7-day-smoothed new cases per million:<ul>" +
+	text.innerHTML = "<p>There are " + participantsOnsiteCount + " in person and " + participantsRemoteCount + + " remote participants. 7-day-smoothed new cases per million:<ul>" +
 		"<li>weighted on all in person participants: " + Math.round(weightedNewCases) + "</li>" +
 		"<li>country with minimum new cases: " + minCountry + " (" + covid_data[minCountry].location + ") with " + minNewcases + "</li>" +
 		"<li>country with maximum new cases: " + maxCountry + " (" + covid_data[maxCountry].location + ") with " + Math.round(maxNewcases) + "</li>" +
@@ -170,23 +200,17 @@ function drawChart() {
 	text.innerHTML = draftAuthorsCollectionDate + ' (UTC)' ;
 }
 
-function displayCategory(elemId, name, onsite, remote, unknown, total) {
+function displayCategory(elemId, name, onsite, remote, unknown, total, onsiteNames = null, remoteNames = null, unknownNames = null) {
 	var leaders = document.getElementById(elemId) ;
 	leaders.innerHTML = '<p>Out of the ' + total + ' ' + name + ', there are:</p><ul>' +
-		'<li>' + onsite + ' on site;</li>' +
-		'<li>' + remote + ' remote;</li>' +
-		'<li>' + unknown + ' not registered yet.</li>' +
+		'<li><abbr title="' + onsiteNames + '">' + onsite + ' on site</abbr>;</li>' +
+		'<li><abbr title="' + remoteNames + '">' + remote + ' remote</abbr>;</li>' +
+		'<li><abbr title="' + unknownNames + '">' + unknown + ' not registered yet</abbr>.</li>' +
 		'</ul>' ;
 	document.getElementById(elemId + 'Onsite').style.width = Math.round(100.0*onsite/total) + "%" ;
 	document.getElementById(elemId + 'Onsite').innerHTML = Math.round(100.0*onsite/total) + "%" ;
 	document.getElementById(elemId + 'Remote').style.width = Math.round(100.0*remote/total) + "%" ;
 	document.getElementById(elemId + 'Remote').innerHTML = Math.round(100.0*remote/total) + "%" ;
-}
-//
-// Find a participants based on the datatracker ID
-function findParticipant(id, table) {
-        if (table[id]) return true ;
-        return false ;
 }
 
 // Find a participants based on the email
@@ -202,20 +226,32 @@ function onLoad() {
 	document.getElementById('ietfNumberSpan').innerHTML = '-' + ietfNumber + ' (' + ietfCity + '/' + ietfCountry + ')';
 	// Let's work on the I* leadership presence
 	leadersOnsite = 0 ;
+	leadersOnsiteNames = [] ;
 	leadersRemote = 0 ;
+	leadersRemoteNames = [] ;
 	leadersUnknown = 0 ;
+	leadersUnknownNames = [] ;
 	leadersTotal = 0 ;
 	for (let id in leaders) {
-		if (findParticipant(id, participantsOnsite))
+		if (findParticipantById(id, participantsOnsite)) {
 			leadersOnsite++ ;
-		else if (findParticipant(id, participantsRemote))
+			leadersOnsiteNames.push(leaders[id].ascii) ;
+		} else if (findParticipantById(id, participantsRemote)) {
 			leadersRemote++ ;
-		else {
+			leadersRemoteNames.push(leaders[id].ascii) ;
+		} else if (findParticipantByName(leaders[id].ascii, participantsOnsite)) {
+			leadersOnsite++ ;
+			leadersOnsiteNames.push(leaders[id].ascii) ;
+		} else if (findParticipantByName(leaders[id].ascii, participantsRemote)) {
+			leadersRemote++ ;		
+			leadersRemoteNames.push(leaders[id].ascii) ;
+		} else {
 			leadersUnknown ++ ;
+			leadersUnknownNames.push(leaders[id].ascii) ;
 		}
 		leadersTotal ++ ;
 	}
-	displayCategory('leadersId', 'IESG/IAB members', leadersOnsite, leadersRemote, leadersUnknown, leadersTotal) ;
+	displayCategory('leadersId', 'IESG/IAB members', leadersOnsite, leadersRemote, leadersUnknown, leadersTotal, leadersOnsiteNames.join(', '), leadersRemoteNames.join(', '),  leadersUnknownNames.join(', ')) ;
 
 	// get the list of all WG
 	wgChairsOnsiteList = []
@@ -227,30 +263,53 @@ function onLoad() {
 
 	// Let's work on the WG chairs presence
 	wgChairsOnsite = 0 ;
+	wgChairsOnsiteNames = [] ;
 	wgChairsRemote = 0 ;
+	wgChairsRemoteNames = [] ;
 	wgChairsUnknown = 0 ;
+	wgChairsUnknownNames = [] ;
 	wgChairsTotal = 0 ;
 	for (let id in wgChairs) {
 		leader = wgChairs[id] ;
-		if (findParticipant(id, participantsOnsite)) {
+		if (findParticipantById(id, participantsOnsite)) {
 			wgChairsOnsite++ ;
+			wgChairsOnsiteNames.push(leader.ascii) ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
 				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsOnsiteList[wgName]++ ;
 			}
-		} else if (findParticipant(id, participantsRemote)){
+		} else if (findParticipantById(id, participantsRemote)){
 			wgChairsRemote++ ;
+			wgChairsRemoteNames.push(leader.ascii) ;
 			for (let role in leader['role']) {
 				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
 				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
 				wgChairsRemoteList[wgName]++ ;
 			}
-		} else
+		} else if (findParticipantByName(leader.ascii, participantsOnsite)) {
+			wgChairsOnsite++ ;
+			wgChairsOnsiteNames.push(leader.ascii) ;
+			for (let role in leader['role']) {
+				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
+				wgChairsOnsiteList[wgName]++ ;
+			}
+		} else if (findParticipantByName(leader.ascii, participantsRemote)){
+			wgChairsRemote++ ;
+			wgChairsRemoteNames.push(leader.ascii) ;
+			for (let role in leader['role']) {
+				if (leader['role'][role].endsWith('-chair')) wgName = leader['role'][role].slice(0, -6) ; // remove the trailing "-chair"
+				else if (leader['role'][role].endsWith('-delegate')) wgName = leader['role'][role].slice(0, -9) ; // remove the trailing "-delegate"
+				wgChairsRemoteList[wgName]++ ;
+			}
+		} else {
 			wgChairsUnknown ++ ;
+			wgChairsUnknownNames.push(leader.ascii) ;
+		}
 		wgChairsTotal ++ ;
 	}
-	displayCategory('wg_chairs', 'WG/BoF chairs or delegates', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal) ;
+	displayCategory('wg_chairs', 'WG/BoF chairs or delegates', wgChairsOnsite, wgChairsRemote, wgChairsUnknown, wgChairsTotal, wgChairsOnsiteNames.join(', '), wgChairsRemoteNames.join(', '), wgChairsUnknownNames.join(', ')) ;
 	onSiteWG = [] ;
 	onSiteRemoteWG = [] ;
 	nobodyWG = [] ;
@@ -278,6 +337,10 @@ function onLoad() {
 			draftAuthorsOnsite++ ;
 		else if (findParticipantByEmail(id, participantsRemote))
 			draftAuthorsRemote++ ;
+		if (findParticipantByName(draftAuthors[id].name, participantsOnsite))
+			draftAuthorsOnsite++ ;
+		else if (findParticipantByName(draftAuthors[id].name, participantsRemote))
+			draftAuthorsRemote++ ;
 		else
 			draftAuthorsUnknown++ ;
 		draftAuthorsTotal ++ ;
@@ -285,19 +348,36 @@ function onLoad() {
 	displayCategory('draft_authors', 'documents authors in the last 4 months', draftAuthorsOnsite, draftAuthorsRemote, draftAuthorsUnknown, draftAuthorsTotal) ;
 } // onLoad()
 
+document.addEventListener('DOMContentLoaded', function () {
+    const checkbox = document.getElementById('toggleCheckbox');
+    const hiddenElements = document.querySelectorAll('.covid');
+
+    checkbox.addEventListener('change', function () {
+        hiddenElements.forEach(el => {
+            if (this.checked) {
+                // If checked, remove 'd-none' to show the element
+                el.classList.remove('d-none');
+            } else {
+                // If unchecked, add 'd-none' to hide the element
+                el.classList.add('d-none');
+            }
+        });
+    });
+});
+
 </script>
 <!-- Matomo -->
 <script type="text/javascript">
   var _paq = window._paq = window._paq || [];
   /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
   _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-    _paq.push(["setCookieDomain", "*.ehealth.vyncke.org"]);
+    _paq.push(["setCookieDomain", "*.ietf.vyncke.org"]);
     _paq.push(['trackPageView']);
       _paq.push(['enableLinkTracking']);
       (function() {
 	          var u="//analytics.vyncke.org/";
 		      _paq.push(['setTrackerUrl', u+'matomo.php']);
-		      _paq.push(['setSiteId', '6']);
+		      _paq.push(['setSiteId', '9']);
 		          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
 		          g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
 			    })();
@@ -306,15 +386,17 @@ function onLoad() {
 </head>
 <body onload="onLoad();">
 <div class="container-fluid">
-<h1>IETF<span id="ietfNumberSpan"></span> Participants and COVID-19</h1>
+<h1>IETF<span id="ietfNumberSpan"></span> Participants<span class="covid d-none"> and COVID-19</span></h1>
 <div class="row">
 <div class="col-sm-12 col-lg-6 col-xxl-4">
-<h2>On-site participants</h2>
-<div id="pie_chart_div">Please wait while loading... if not loaded after 1 minute, please reload</div>
+<h2>Onsite participants</h2>
+<div id="pie_chart_div_onsite">Please wait while loading... if not loaded after 1 minute, please reload</div>
+<h2>Remote participants</h2>
+<div id="pie_chart_div_remote">Please wait while loading... if not loaded after 1 minute, please reload</div>
 <p>Hoover over one pie piece to get more information.</p>
 </div> <!-- col -->
 
-<div class="col-sm-12 col-lg-6 col-xxl-4">
+<div class="col-sm-12 col-lg-6 col-xxl-4 d-none covid">
 <h2>COVID-19 Data</h2>
 <div id="data"></div>
 </div> <!-- col -->
@@ -384,7 +466,7 @@ function onLoad() {
 </div><!-- accordion -->
 
 <br>
-Get <a href="wg.php">more information per working group.</a>
+Get more information per <a href="wg.php">working group/BoF</a>, or <a href="directorate.php">directorate</a>.
 <br>
 
 <hr>
@@ -399,10 +481,21 @@ Get <a href="wg.php">more information per working group.</a>
 </div> <!-- col -->
 
 </div> <!-- row -->
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" id="toggleCheckbox">
+  <label class="form-check-label" for="toggleCheckbox">
+    Show COVID-19 data
+  </label>
+</div>
 <hr>
 <?=$ipv4only_message?>
-<p>If you want to know more on how IETF technologies were used worldwide for "COVID-19 certificates", here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/>
-<em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, <a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>, itself based on <a href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE COVID-19 Data</a>.
+<p>
+<span class="covid d-none">If you want to know more on how IETF technologies were used worldwide for "COVID-19 certificates", 
+	here are a <a href="https://ehealth.vyncke.org">decoder and explanations</a>.<br/></span>
+<em>Registration data collected on <span id="registrationDate"></span> (hourly refresh), WG chairs as of <span id="wgChairsDate"></span> (daily refresh), 
+recent draft authors as of <span id="draftAuthorsDate"></span> (daily refresh), by Eric Vyncke based on <a href="https://developers.google.com/chart">Google charts</a>, 
+<a href="https://datatracker.ietf.org/api/">IETF data tracker</a> data
+<span class="covid d-none">, and <a href="https://ourworldindata.org/">https://ourworldindata.org/</a>, itself based on <a href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE COVID-19 Data</a></span>.
 The power of open data!</em><br/>
 <small>Code is open source and stored on IPv4-only github <a href="https://github.com/evyncke/ehealth/tree/main/ietf">repo</a>.</small></p>
 <!-- Matomo Image Tracker and warning about JS requirement -->
@@ -413,3 +506,4 @@ The power of open data!</em><br/>
 <!-- Bootstrap bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
+</html>

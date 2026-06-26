@@ -34,15 +34,16 @@ import re
 # Currently, lastname, firstname, affiliation, country
 
 def getMeetingParticipants(meetingNumber):
-  countries = {}
+  countriesOnsite = {}
+  countriesRemote = {}
   participantsOnsite = {}
   participantsRemote = {}
 
 # Read all participants
 
 # Can be filtered with reg_type=onsite ou remote
-  nextUri= "/api/v1/stats/meetingregistration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber) + "&reg_type=onsite"
-  nextUri= "/api/v1/stats/meetingregistration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber)
+  # nextUri= "/api/v1/stats/meetingregistration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber) + "&reg_type=onsite"
+  nextUri= "/api/v1/meeting/registration/?meeting__number={}&limit=200&offset=0&format=xml".format(meetingNumber)
 
   while (nextUri):
       url = "https://datatracker.ietf.org" + nextUri
@@ -55,42 +56,42 @@ def getMeetingParticipants(meetingNumber):
       print("Got {} entries".format(totalCount))
       objects = root.find('objects')
       for object in objects:
-          registrationType = object.find('reg_type')
-          firstName = object.find('first_name').text
-          lastName = object.find('last_name').text
-          email = object.find('email').text
-          affiliation = object.find('affiliation').text
-          person = object.find('person').text
-          countryCode = object.find('country_code').text
-          if countryCode == 'BE':
-              print('Belgium guy found', registrationType.text, firstName, lastName, email, person)
-          print(registrationType.text, firstName, lastName, email )
-          if not person:
-              continue
-          id = int(re.search(r"api/v1/person/person/(.+)/$", person).group(1))
-          if registrationType.text.startswith('onsite'):
-              if countryCode in countries:
-                  countries[countryCode] = countries[countryCode] + 1
-              else:
-                  countries[countryCode] = 1
-
-          participant = { 'first_name': firstName, 'last_name': lastName, 'country_code': countryCode, 'email' : email, 'affiliation' : affiliation, 'id': id}
-          if registrationType.text.startswith('onsite') or  registrationType.text.endswith(' onsite'):
-              participantsOnsite[id] = participant
-          elif registrationType.text.startswith('remote') or registrationType.text.endswith(' remote'):
-              participantsRemote[id] = participant
-          elif registrationType.text == 'hackathon_onsite' or registrationType.text == 'hackathon_remote':
-              continue
-          else:
-              print('Unknown reg_type', registrationType.text)
-              continue
+        firstName = object.find('first_name').text
+        lastName = object.find('last_name').text
+        email = object.find('email').text
+        person = object.find('person').text
+        countryCode = object.find('country_code').text
+        if not person:
+            continue
+        id = int(re.search(r"api/v1/person/person/(.+)/$", person).group(1))
+        participant = { 'first_name': firstName, 'last_name': lastName, 'country_code': countryCode, 'email' : email, 'id': id}
+        tickets = object.find('tickets')
+        registrationType = None
+        for ticket in tickets:     
+            attendanceType = ticket.find('attendance_type').text
+            if attendanceType.endswith('/onsite/'):
+                registrationType = 'onsite'
+                participantsOnsite[id] = participant
+                if countryCode in countriesOnsite:
+                    countriesOnsite[countryCode] = countriesOnsite[countryCode] + 1
+                else:
+                    countriesOnsite[countryCode] = 1
+                break
+            elif attendanceType.endswith('/remote/'):
+                registrationType = 'remote'
+                participantsRemote[id] = participant
+                if countryCode in countriesRemote:
+                    countriesRemote[countryCode] = countriesRemote[countryCode] + 1
+                else:
+                    countriesRemote[countryCode] = 1
+                break
 
   with open('data/participants_' + str(meetingNumber) + '.js', 'w', encoding = 'utf-8') as f:
       f.write("var participantsOnsite = ")
       json.dump(participantsOnsite, f, ensure_ascii = False, indent = 2)
       f.write(";\n")
       f.write("var countries = ")
-      json.dump(countries, f, ensure_ascii = False, indent = 2)
+      json.dump(countriesOnsite, f, ensure_ascii = False, indent = 2)
       f.write(";\n")
       f.write("var participantsRemote = ")
       json.dump(participantsRemote, f, ensure_ascii = False, indent = 2)
@@ -107,5 +108,5 @@ def getMeetingParticipants(meetingNumber):
 # Load the information about next/current and last meetings
 meetings = json.load(open('meetings.json'))
 
-for i in range(122, 125):
+for i in range(123, 126):
   getMeetingParticipants(i)

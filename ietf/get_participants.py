@@ -24,42 +24,33 @@ import sys
 meetings = json.load(open('meetings.json'))
 meetingNumber = meetings['next']['number']
 
-url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/onsite/"
+url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/?regtype=onsite"
 
 countries = {}
-participants = []
+participantsOnsite = {}
+participantsRemote = {}
 
 try:
     root = html.parse(request.urlopen(url))
     rows = root.iter('tr')
+    # Rows cells are: lastname, firstname, affiliation, country, reg type
     next(rows) # Skip the header
 except error.HTTPError:
     # Usually because the meeting registration is not yet open
     rows = []
 
-fjs = open('participants.js', 'w', encoding = 'utf-8')
-fjs.write("var participantsOnsite = [")
 for row in rows:
-        fjs.write('["{}", "{}", "{}", "{}"],'.format(row[0].text, row[1].text, row[2].text, row[3].text))
-        participants.append([row[0].text, row[1].text, row[2].text, row[3].text])
+        participant = { 'first_name': row[1].text, 'last_name': row[0].text, 'affiliation': row[2].text, 'country_code': row[3].text, 'email' : None, 'id': None}
+        participantsOnsite[row[0].text + row[1].text] = participant
         country = row[3].text
         if country in countries:
             countries[country] = countries[country] + 1
         else:
             countries[country] = 1
-fjs.write("] ;\n")
-
-fjs.write("var countries = ")
-json.dump(countries, fjs, ensure_ascii = False, indent = 2)
-fjs.write(";\n")
-
-with open('onsite.json', 'w', encoding = 'utf-8') as f:
-        json.dump(participants, f, ensure_ascii = False, indent = 2)
 
 # Look for remote participants
-url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/remote/"
+url = "https://registration.ietf.org/" + str(meetingNumber) + "/participants/?regtype=remote"
 
-participants = []
 try:
     root = html.parse(request.urlopen(url))
     rows = root.iter('tr')
@@ -67,16 +58,25 @@ try:
 except error.HTTPError:
     rows = []
 
-fjs.write("var participantsRemote = [")
 for row in rows:
-        fjs.write('["{}", "{}", "{}", "{}"],\n'.format(row[0].text, row[1].text, row[2].text, row[3].text))
-        participants.append([row[0].text, row[1].text, row[2].text, row[3].text])
-fjs.write("] ;\n")
+        participant = { 'first_name': row[1].text, 'last_name': row[0].text, 'affiliation': row[2].text, 'country_code': row[3].text, 'email' : None, 'id': None}
+        participantsRemote[row[0].text + row[1].text] = participant
+
+with open('participants.js', 'w', encoding = 'utf-8') as f:
+    f.write("var participantsOnsite = ")
+    json.dump(participantsOnsite, f, ensure_ascii = False, indent = 2)
+    f.write(";\n")
+    f.write("var countries = ")
+    json.dump(countries, f, ensure_ascii = False, indent = 2)
+    f.write(";\n")
+    f.write("var participantsRemote = ")
+    json.dump(participantsRemote, f, ensure_ascii = False, indent = 2)
+    f.write(";\n")
+    now = datetime.datetime.now(datetime.timezone.utc)
+    f.write("var registrationCollectionDate = '{}';\n".format(now.isoformat(timespec='seconds')))
 
 with open('remote.json', 'w', encoding = 'utf-8') as f:
-        json.dump(participants, f, ensure_ascii = False, indent = 2)
+        json.dump(participantsRemote, f, ensure_ascii = False, indent = 2)
 
-now = datetime.datetime.now(datetime.timezone.utc)
-fjs.write("var registrationCollectionDate = '{}';\n".format(now.isoformat(timespec='seconds')))
-
-fjs.close()
+with open('onsite.json', 'w', encoding = 'utf-8') as f:
+        json.dump(participantsOnsite, f, ensure_ascii = False, indent = 2)

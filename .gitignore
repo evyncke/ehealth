@@ -3,9 +3,12 @@ evyncke.*
 *.lock
 *.js
 *.json
+*.csv
 encode.sh
 decode.sh
 process_*.sh
+*cisco*
 ietf/data/
 __pycache__/
 bluesheets/
+vendor/

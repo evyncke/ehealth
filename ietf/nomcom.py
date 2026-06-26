@@ -29,18 +29,36 @@ canonical_mappings = {
         "china mobile" : "China Mobile",
         "cisco": "Cisco",
         "comcast": "Comcast",
+        "f5": "F5",
         "facebook": "Facebook",
         "futurewei": "Futurewei",
         "google": "Google",
+        "hewlett packard": "HPE",
         "huawei": "Huawei",
+        "icann": "ICANN",
+        "independent": "Independent",
         "juniper": "Juniper",
         "microsoft": "Microsoft",
         "mozilla": "Mozilla",
         "nokia": "Nokia",
+        "no": "Independent",
+        "none": "Independent",
         "ripe": "RIPE",
+        "self": "Independent",
         "zte": "ZTE",
         # Add more mappings as needed
 }
+
+def get_largest_nomcom_id():
+    url = "https://datatracker.ietf.org/api/v1/nomcom/nomcom/?format=json&order_by=-id&limit=1"
+    with request.urlopen(url) as resp:
+        payload = json.load(resp)
+        objects = payload.get("objects", [])
+        if not objects:
+            return None
+        return objects[0].get("id")
+
+thisNomCom =  get_largest_nomcom_id()
 
 def get_canonical_form(input_string):
     """
@@ -64,22 +82,17 @@ def get_canonical_form(input_string):
     return input_string
 
 def getPerson(uri, affiliation, time):
-# uri looks like api/v1/person/person/111656/
+# uri looks like api/v1/person/person/111656/ with elements such as ascii, biography, id, name, resource_uri, time, ... but no email :-(
     url =  "https://datatracker.ietf.org" + uri + '?format=xml'
     personTree = etree.parse(request.urlopen(url))
     personRoot = personTree.getroot()
     ascii = personRoot.find('ascii').text
     print("{}; {}; {}".format(affiliation, ascii, time))
 
-# TODO should use https://datatracker.ietf.org/api/v1/nomcom/nomcom/
-
-thisNomCom = 17
-
 nextUri = "/api/v1/nomcom/volunteer/?format=xml&limit=50&offset=0&nomcom=" + str(thisNomCom)
 perAffiliation = {}
 while (nextUri):
     url = "https://datatracker.ietf.org" + nextUri
-#    print("Getting", url)
     tree = etree.parse(request.urlopen(url))
     root = tree.getroot()
     meta = root.find('meta')

@@ -20,6 +20,28 @@ import json
 import datetime 
 import re
 
+    # Define the mapping dictionary
+canonical_mappings = {
+        "akayla": "AKAYLA",
+        "apnic": "APNIC",
+        "apple": "Apple",
+        "arin": "ARIN",
+        "china mobile" : "China Mobile",
+        "cisco": "Cisco",
+        "comcast": "Comcast",
+        "facebook": "Facebook",
+        "futurewei": "Futurewei",
+        "google": "Google",
+        "huawei": "Huawei",
+        "juniper": "Juniper",
+        "microsoft": "Microsoft",
+        "mozilla": "Mozilla",
+        "nokia": "Nokia",
+        "ripe": "RIPE",
+        "zte": "ZTE",
+        # Add more mappings as needed
+}
+
 def get_canonical_form(input_string):
     """
     Maps an input string to its canonical form based on a predefined dictionary.
@@ -30,42 +52,16 @@ def get_canonical_form(input_string):
     Returns:
         str: The canonical form if found in the dictionary, otherwise the original input string.
     """
-    # Define the mapping dictionary
-    canonical_mappings = {
-        "apnic foundation": "APNIC",
-        "apple inc": "Apple",
-        "apple inc.": "Apple",
-        "china mobile research institute" : "China Mobile",
-        "cisco": "Cisco",
-        "cisco systems india pvt ltd": "Cisco",
-        "cisco systems": "Cisco",
-        "cisco system": "Cisco",
-        "cisco system, inc.": "Cisco",
-        "futurewei technologies inc.": "Futurewei",
-        "futurewei usa": "Futurewei",
-        "huawei": "Huawei",
-        "huawei international pte ltd": "Huawei",
-        "huawei technologies": "Huawei",
-        "huawei technologies co., ltd.": "Huawei",
-        "huawei technology dusseldorf gmbh": "Huawei",
-        "huawei tech dusseldorf": "Huawei",
-        "huawei technology co.": "Huawei",
-        "huawei technologies, co. ltd.": "Huawei", 
-        "huawei technologies france s.a.s.u.": "Huawei", 
-        "huawei r&d": "Huawei",
-        "juniper networks": "Juniper",
-        "microsoft corporation": "Microsoft",
-        "nokia": "Nokia",
-        "nokia solutions and networks gmbh & co. kg": "Nokia",
-        "zte": "ZTE",
-        "zte corporation": "ZTE",
-        # Add more mappings as needed
-    }
+
     # Normalize the input string (e.g., lowercase and strip whitespace)
     normalized_input = input_string.strip().lower()
 
     # Look for the canonical form in the dictionary
-    return canonical_mappings.get(normalized_input, input_string)
+    for canonical_key in canonical_mappings:
+        if normalized_input.startswith(canonical_key):
+            return canonical_mappings[canonical_key]
+        
+    return input_string
 
 def getPerson(uri, affiliation, time):
 # uri looks like api/v1/person/person/111656/
@@ -73,10 +69,11 @@ def getPerson(uri, affiliation, time):
     personTree = etree.parse(request.urlopen(url))
     personRoot = personTree.getroot()
     ascii = personRoot.find('ascii').text
-    name = personRoot.find('name').text
     print("{}; {}; {}".format(affiliation, ascii, time))
 
-thisNomCom = 16
+# TODO should use https://datatracker.ietf.org/api/v1/nomcom/nomcom/
+
+thisNomCom = 17
 
 nextUri = "/api/v1/nomcom/volunteer/?format=xml&limit=50&offset=0&nomcom=" + str(thisNomCom)
 perAffiliation = {}
